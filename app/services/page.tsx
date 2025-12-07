@@ -1,0 +1,271 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useI18n } from '@/lib/i18n'
+
+interface Service {
+  id: number
+  name: string
+  nameAr: string
+  description: string
+  descriptionAr: string
+  dept: string
+  platform: string
+  channelType: string
+  externalUrl: string | null
+}
+
+interface FiltersData {
+  departments: string[]
+  platforms: string[]
+}
+
+export default function ServicesPage() {
+  const { locale } = useI18n()
+  const router = useRouter()
+  const [services, setServices] = useState<Service[]>([])
+  const [filters, setFilters] = useState<FiltersData>({ departments: [], platforms: [] })
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedPlatform, setSelectedPlatform] = useState('')
+  const [selectedDepartment, setSelectedDepartment] = useState('')
+
+  useEffect(() => {
+    fetchServices()
+  }, [selectedPlatform, selectedDepartment, searchQuery])
+
+  const fetchServices = async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (selectedPlatform) params.set('platform', selectedPlatform)
+      if (selectedDepartment) params.set('department', selectedDepartment)
+      if (searchQuery) params.set('search', searchQuery)
+
+      const response = await fetch(`/api/services?${params.toString()}`)
+      const data = await response.json()
+      setServices(data.services)
+      setFilters(data.filters)
+    } catch (error) {
+      console.error('Error fetching services:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleServiceClick = (service: Service) => {
+    if (service.channelType === 'EXTERNAL' && service.externalUrl) {
+      window.open(service.externalUrl, '_blank')
+    } else {
+      router.push(`/services/${service.id}`)
+    }
+  }
+
+  const getPlatformColor = (platform: string) => {
+    switch (platform) {
+      case 'ADC Platform':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'TAMM':
+        return 'bg-purple-100 text-purple-800 border-purple-200'
+      case 'Affiliates Platform':
+        return 'bg-amber-100 text-amber-800 border-amber-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getChannelIcon = (channelType: string) => {
+    if (channelType === 'EXTERNAL') {
+      return (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      )
+    }
+    return (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    )
+  }
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setSelectedPlatform('')
+    setSelectedDepartment('')
+  }
+
+  const hasActiveFilters = searchQuery || selectedPlatform || selectedDepartment
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <Link
+            href="/"
+            className="inline-flex items-center text-blue-100 hover:text-white mb-4 transition-colors"
+          >
+            <svg className="w-5 h-5 me-2 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            {locale === 'ar' ? 'العودة للرئيسية' : 'Back to Home'}
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {locale === 'ar' ? 'دليل الخدمات' : 'Service Directory'}
+          </h1>
+          <p className="text-blue-100 text-lg">
+            {locale === 'ar'
+              ? 'استكشف جميع خدمات غرفة أبوظبي'
+              : 'Explore all Abu Dhabi Chamber services'}
+          </p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div className="grid md:grid-cols-4 gap-4">
+            {/* Search */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {locale === 'ar' ? 'البحث' : 'Search'}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={locale === 'ar' ? 'ابحث عن خدمة...' : 'Search for a service...'}
+                  className="w-full px-4 py-2.5 ps-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                />
+                <svg
+                  className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Platform Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {locale === 'ar' ? 'المنصة' : 'Platform'}
+              </label>
+              <select
+                value={selectedPlatform}
+                onChange={(e) => setSelectedPlatform(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+              >
+                <option value="">{locale === 'ar' ? 'جميع المنصات' : 'All Platforms'}</option>
+                {filters.platforms.map((platform) => (
+                  <option key={platform} value={platform}>
+                    {platform}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Department Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {locale === 'ar' ? 'القسم' : 'Department'}
+              </label>
+              <select
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+              >
+                <option value="">{locale === 'ar' ? 'جميع الأقسام' : 'All Departments'}</option>
+                {filters.departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <button
+                onClick={clearFilters}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                {locale === 'ar' ? 'مسح جميع الفلاتر' : 'Clear all filters'}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-gray-600">
+            {locale === 'ar'
+              ? `عرض ${services.length} خدمة`
+              : `Showing ${services.length} service${services.length !== 1 ? 's' : ''}`}
+          </p>
+        </div>
+
+        {/* Services Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <svg className="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          </div>
+        ) : services.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => (
+              <button
+                key={service.id}
+                onClick={() => handleServiceClick(service)}
+                className="text-start bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border border-gray-100 group"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPlatformColor(service.platform)}`}>
+                    {service.platform}
+                  </span>
+                  <span className="text-gray-400 group-hover:text-blue-600 transition-colors">
+                    {getChannelIcon(service.channelType)}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                  {locale === 'ar' ? service.nameAr : service.name}
+                </h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  {locale === 'ar' ? service.descriptionAr : service.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">{service.dept}</span>
+                  {service.channelType === 'EXTERNAL' && (
+                    <span className="text-xs text-gray-400">
+                      {locale === 'ar' ? 'رابط خارجي' : 'External link'}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-white rounded-2xl">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="mt-4 text-gray-600">
+              {locale === 'ar' ? 'لم يتم العثور على خدمات. جرب فلاتر مختلفة.' : 'No services found. Try different filters.'}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

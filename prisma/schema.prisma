@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Application {
+  id               String        @id @default(cuid())
+  applicantName    String
+  organizationName String
+  email            String
+  sector           String
+  description      String
+  status           String        @default("SUBMITTED") // SUBMITTED, UNDER_REVIEW, CORRECTIONS_REQUESTED, APPROVED, REJECTED
+  aiPrecheckResult String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  reviewNotes      ReviewNote[]
+  certificate      Certificate?
+  documents        ApplicationDocument[]
+
+  // Extended ESG fields
+  phoneNumber         String?
+  tradeLicenseNumber  String?
+  subSector           String?
+  country             String?
+
+  // ESG Profile JSON fields (stored as JSON strings)
+  environmentalProfile String?  // JSON: { description, carbonEmissions, energyReduction, ... }
+  socialProfile        String?  // JSON: { description, workforceDiversity, communityPrograms, ... }
+  governanceProfile    String?  // JSON: { description, boardStructure, complianceFrameworks, ... }
+}
+
+model ReviewNote {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authorType    String      // SYSTEM, STAFF
+  note          String
+  createdAt     DateTime    @default(now())
+}
+
+model Certificate {
+  id                String      @id @default(cuid())
+  applicationId     String      @unique
+  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  certificateNumber String      @unique
+  issuedAt          DateTime    @default(now())
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  dept        String
+  platform    String   // "ADC Platform", "TAMM", "Affiliates Platform"
+  name        String
+  nameAr      String   // Arabic name
+  description String
+  descriptionAr String // Arabic description
+  channelType String   // "INTERNAL" or "EXTERNAL"
+  externalUrl String?
+  tags        String?  // Store JSON string of keywords (EN)
+  tagsAr      String?  // Store JSON string of keywords (AR)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ApplicationDocument {
+  id            Int      @id @default(autoincrement())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type          String   // "ESG_POLICY", "REPORT", "CERTIFICATION", etc.
+  fileName      String
+  filePath      String   // path to stored file
+  ocrText       String?  // text extracted via OCR/ICR
+  aiReview      String?  // AI validation / comments on the document
+  createdAt     DateTime @default(now())
+}
