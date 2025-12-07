@@ -38,8 +38,8 @@ export async function GET(request: NextRequest) {
       select: { dept: true, platform: true },
     })
 
-    const departments = [...new Set(allServices.map(s => s.dept))].sort()
-    const platforms = [...new Set(allServices.map(s => s.platform))].sort()
+    const departments = [...new Set(allServices.map((s: { dept: string; platform: string }) => s.dept))].sort()
+    const platforms = [...new Set(allServices.map((s: { dept: string; platform: string }) => s.platform))].sort()
 
     return NextResponse.json({
       services,
