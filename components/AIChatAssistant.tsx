@@ -37,7 +37,7 @@ export default function AIChatAssistant() {
           ? 'مرحباً! 👋 أنا مساعدك الذكي من غرفة أبوظبي. كيف يمكنني مساعدتك اليوم؟'
           : 'Hello! 👋 I\'m your AI assistant from Abu Dhabi Chamber. How can I help you today?',
         suggestedActions: [
-          { label: isRtl ? 'التقديم على شهادة ESG' : 'Apply for ESG Certificate', action: '/services/5' },
+          { label: isRtl ? 'التقديم على شهادة ESG' : 'Apply for ESG Certificate', action: '/services/1' },
           { label: isRtl ? 'استكشاف الخدمات' : 'Explore Services', action: '/services' },
         ]
       }])

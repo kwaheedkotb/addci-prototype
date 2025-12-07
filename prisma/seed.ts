@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 
-const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' })
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient()
 
 async function main() {
   // Clear existing data
@@ -188,6 +186,22 @@ async function main() {
   console.log(`Created ${applications.length + 1} applications`)
 
   // Seed Service Hub data
+  // Create ESG service first to ensure it gets ID 1
+  const esgService = await prisma.service.create({
+    data: {
+      dept: 'Sustainability',
+      platform: 'ADC Platform',
+      name: 'Chamber ESG Label',
+      nameAr: 'شهادة ESG من الغرفة',
+      description: 'Apply for ESG (Environmental, Social, Governance) certification to demonstrate your commitment to sustainable business practices.',
+      descriptionAr: 'تقدم بطلب للحصول على شهادة ESG (البيئة والمجتمع والحوكمة) لإثبات التزامك بممارسات الأعمال المستدامة.',
+      channelType: 'INTERNAL',
+      tags: JSON.stringify(['ESG', 'sustainability', 'environment', 'social', 'governance', 'certificate', 'green', 'sustainable']),
+      tagsAr: JSON.stringify(['ESG', 'استدامة', 'بيئة', 'مجتمع', 'حوكمة', 'شهادة', 'أخضر', 'مستدام']),
+    },
+  })
+  console.log(`ESG Service created with ID: ${esgService.id}`)
+
   const services = await Promise.all([
     // ADC Platform - INTERNAL services
     prisma.service.create({
@@ -240,19 +254,6 @@ async function main() {
         channelType: 'INTERNAL',
         tags: JSON.stringify(['matchmaking', 'partners', 'investors', 'networking', 'collaboration', 'B2B']),
         tagsAr: JSON.stringify(['توفيق', 'شركاء', 'مستثمرين', 'تواصل', 'تعاون']),
-      },
-    }),
-    prisma.service.create({
-      data: {
-        dept: 'Sustainability',
-        platform: 'ADC Platform',
-        name: 'Chamber ESG Label',
-        nameAr: 'شهادة ESG من الغرفة',
-        description: 'Apply for ESG (Environmental, Social, Governance) certification to demonstrate your commitment to sustainable business practices.',
-        descriptionAr: 'تقدم بطلب للحصول على شهادة ESG (البيئة والمجتمع والحوكمة) لإثبات التزامك بممارسات الأعمال المستدامة.',
-        channelType: 'INTERNAL',
-        tags: JSON.stringify(['ESG', 'sustainability', 'environment', 'social', 'governance', 'certificate', 'green', 'sustainable']),
-        tagsAr: JSON.stringify(['ESG', 'استدامة', 'بيئة', 'مجتمع', 'حوكمة', 'شهادة', 'أخضر', 'مستدام']),
       },
     }),
     prisma.service.create({
@@ -632,7 +633,7 @@ async function main() {
     }),
   ])
 
-  console.log(`Created ${services.length} services`)
+  console.log(`Created ${services.length + 1} services (including ESG)`)
 }
 
 main()

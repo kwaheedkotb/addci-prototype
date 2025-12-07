@@ -267,7 +267,7 @@ function getSuggestedActions(message: string, locale: string): { label: string; 
 
   if (message.includes('esg') || message.includes('certificate') || message.includes('شهادة')) {
     return [
-      { label: isArabic ? 'بدء طلب ESG' : 'Start ESG Application', action: '/services/5' },
+      { label: isArabic ? 'بدء طلب ESG' : 'Start ESG Application', action: '/services/1' },
       { label: isArabic ? 'عرض طلباتي' : 'View My Applications', action: '/customer' },
     ]
   }
