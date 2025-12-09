@@ -1271,81 +1271,81 @@ ${formData.governanceProfile?.description ?? ''}
           {openSection === 'documents' && (
             <div id="section-documents" className="p-6 border-t border-gray-100" role="region" aria-labelledby="documents-header">
               {/* Required Documents */}
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="bg-slate-50 border border-slate-200 rounded p-2.5 mb-3">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <svg className="w-3.5 h-3.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <h3 className="font-semibold text-gray-800 text-sm">
+                  <h3 className="font-medium text-gray-800 text-xs">
                     {isRtl ? 'المستندات المطلوبة' : 'Required Documents'}
                   </h3>
-                  <span className="text-red-500 text-xs">*</span>
+                  <span className="text-red-500 text-[10px]">*</span>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="bg-white rounded-lg px-3 py-2 border border-slate-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'سياسة ESG / الاستدامة' : 'ESG / Sustainability Policy'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'وثيقة توضح التزام مؤسستك بممارسات البيئة والمجتمع والحوكمة.' : "Document outlining your organization's commitment to environmental, social, and governance practices."}</p>
+                <div className="grid grid-cols-2 gap-1 text-[11px]">
+                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'سياسة ESG / الاستدامة' : 'ESG / Sustainability Policy'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'وثيقة التزام بممارسات ESG' : 'ESG commitment document'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-slate-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'أحدث تقرير ESG / الاستدامة' : 'Latest ESG / Sustainability Report'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'تقرير سنوي يوثق أداء الاستدامة والإنجازات والأهداف.' : 'Annual report documenting sustainability performance, achievements, and targets.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أحدث تقرير ESG / الاستدامة' : 'Latest ESG / Sustainability Report'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'تقرير أداء الاستدامة السنوي' : 'Annual sustainability report'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-slate-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'سياسة الحوكمة أو الأخلاقيات' : 'Governance or Ethics Policy'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'إطار الحوكمة المؤسسية أو مدونة السلوك أو سياسات الأخلاقيات.' : 'Corporate governance framework, code of conduct, or ethics policies.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'سياسة الحوكمة أو الأخلاقيات' : 'Governance or Ethics Policy'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'إطار الحوكمة ومدونة السلوك' : 'Governance framework & code of conduct'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-slate-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'الرخصة التجارية' : 'Trade License'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'رخصة تجارية سارية للتحقق من هوية النشاط التجاري.' : 'Valid trade license for business identity verification.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'الرخصة التجارية' : 'Trade License'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'رخصة سارية للتحقق من الهوية' : 'Valid license for verification'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Optional Documents */}
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="bg-emerald-50 border border-emerald-200 rounded p-2.5 mb-3">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="font-semibold text-gray-800 text-sm">
-                    {isRtl ? 'مستندات اختيارية موصى بها' : 'Optional but Recommended Documents'}
+                  <h3 className="font-medium text-gray-800 text-xs">
+                    {isRtl ? 'مستندات اختيارية موصى بها' : 'Optional but Recommended'}
                   </h3>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'أدلة الأداء البيئي' : 'Environmental Performance Evidence'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'البصمة الكربونية، تقارير الطاقة، بيانات استهلاك المياه، سجلات إدارة النفايات.' : 'Carbon footprint, energy reports, water usage data, waste management records.'}</p>
+                <div className="grid grid-cols-2 gap-1 text-[11px]">
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أدلة الأداء البيئي' : 'Environmental Performance Evidence'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'البصمة الكربونية، تقارير الطاقة' : 'Carbon footprint, energy reports'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'وثائق الأثر الاجتماعي' : 'Social Impact Documentation'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'سجلات الصحة والسلامة، وثائق رفاهية العمال، تقارير التدريب، أنشطة المشاركة المجتمعية.' : 'HSE records, worker welfare documentation, training reports, community engagement activities.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'وثائق الأثر الاجتماعي' : 'Social Impact Documentation'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'سجلات HSE، رفاهية العمال' : 'HSE records, worker welfare'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'الشهادات' : 'Certifications'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'ISO 14001، ISO 45001، تصنيفات ESG، الجوائز، أو شهادات الطرف الثالث الأخرى.' : 'ISO 14001, ISO 45001, ESG ratings, awards, or other third-party certifications.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'الشهادات' : 'Certifications'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'ISO 14001، ISO 45001، جوائز' : 'ISO 14001, ISO 45001, awards'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'أدلة حوكمة إضافية' : 'Additional Governance Evidence'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'سياسة إدارة المخاطر، سياسة مكافحة الفساد، تقارير التدقيق، محاضر مجلس الإدارة.' : 'Risk management policy, anti-corruption policy, audit reports, board minutes.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أدلة حوكمة إضافية' : 'Additional Governance Evidence'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'سياسات المخاطر ومكافحة الفساد' : 'Risk & anti-corruption policies'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'تقييمات استدامة الموردين' : 'Supplier Sustainability Assessments'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'تقييمات ESG للموردين الرئيسيين وأدلة المشتريات المستدامة.' : 'ESG assessments of key suppliers and evidence of sustainable procurement.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'تقييمات استدامة الموردين' : 'Supplier Sustainability Assessments'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'تقييمات ESG للموردين' : 'ESG assessments of suppliers'}</p>
                   </div>
-                  <div className="bg-white rounded-lg px-3 py-2 border border-emerald-100">
-                    <p className="font-medium text-gray-800">{isRtl ? 'التقرير المالي السنوي' : 'Annual Financial Report'}</p>
-                    <p className="text-gray-500 mt-0.5">{isRtl ? 'بيانات مالية مدققة حديثة لفحوصات الحوكمة والشفافية.' : 'Recent audited financial statements for governance and transparency checks.'}</p>
+                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
+                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'التقرير المالي السنوي' : 'Annual Financial Report'}</p>
+                    <p className="text-gray-500 leading-tight">{isRtl ? 'بيانات مالية مدققة' : 'Audited financial statements'}</p>
                   </div>
                 </div>
                 {/* Incentive box */}
-                <div className="mt-3 bg-emerald-100 rounded-lg px-3 py-2 flex items-start gap-2">
-                  <svg className="w-4 h-4 text-emerald-700 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="mt-1.5 bg-emerald-100 rounded px-2 py-1 flex items-center gap-1.5">
+                  <svg className="w-3 h-3 text-emerald-700 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-xs text-emerald-800">
+                  <p className="text-[10px] text-emerald-800">
                     {isRtl
-                      ? 'تحميل المستندات الاختيارية يساعد النظام على إنشاء تقييم ESG أقوى وقد يزيد من درجتك النهائية.'
-                      : 'Uploading optional documents helps the system generate a stronger ESG evaluation and may increase your final score.'}
+                      ? 'تحميل المستندات الاختيارية قد يزيد من درجتك النهائية.'
+                      : 'Uploading optional documents may increase your final score.'}
                   </p>
                 </div>
               </div>
