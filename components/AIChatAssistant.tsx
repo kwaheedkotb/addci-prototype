@@ -10,6 +10,18 @@ interface Message {
   suggestedActions?: { label: string; action: string }[]
 }
 
+interface ESGHintsEvent extends CustomEvent {
+  detail: {
+    type: 'environmental' | 'social' | 'governance'
+    hints: {
+      suggestions: string[]
+      missingAreas: string[]
+      sampleKpis: string[]
+    }
+    locale: string
+  }
+}
+
 export default function AIChatAssistant() {
   const { locale, t } = useI18n()
   const isRtl = locale === 'ar'
@@ -27,6 +39,106 @@ export default function AIChatAssistant() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Listen for ESG Hints events
+  useEffect(() => {
+    const handleESGHints = (event: ESGHintsEvent) => {
+      const { type, hints, locale: eventLocale } = event.detail
+      const isArabic = eventLocale === 'ar'
+
+      const typeLabels = {
+        environmental: isArabic ? 'البيئة' : 'Environmental',
+        social: isArabic ? 'الاجتماعية' : 'Social',
+        governance: isArabic ? 'الحوكمة' : 'Governance'
+      }
+
+      const typeEmoji = {
+        environmental: '🌿',
+        social: '👥',
+        governance: '⚖️'
+      }
+
+      // Format the hints as a readable message
+      let hintsMessage = isArabic
+        ? `${typeEmoji[type]} **تحليل ملف ${typeLabels[type]}**\n\n`
+        : `${typeEmoji[type]} **${typeLabels[type]} Profile Analysis**\n\n`
+
+      if (hints.suggestions.length > 0) {
+        hintsMessage += isArabic ? '💡 **اقتراحات:**\n' : '💡 **Suggestions:**\n'
+        hints.suggestions.forEach(s => {
+          hintsMessage += `• ${s}\n`
+        })
+        hintsMessage += '\n'
+      }
+
+      if (hints.missingAreas.length > 0) {
+        hintsMessage += isArabic ? '⚠️ **مجالات مفقودة:**\n' : '⚠️ **Missing Areas:**\n'
+        hints.missingAreas.forEach(m => {
+          hintsMessage += `• ${m}\n`
+        })
+        hintsMessage += '\n'
+      }
+
+      if (hints.sampleKpis.length > 0) {
+        hintsMessage += isArabic ? '📊 **مؤشرات أداء نموذجية:**\n' : '📊 **Sample KPIs:**\n'
+        hints.sampleKpis.forEach(k => {
+          hintsMessage += `• ${k}\n`
+        })
+      }
+
+      hintsMessage += isArabic
+        ? '\n\nهل تحتاج مساعدة في تحسين أي من هذه المجالات؟'
+        : '\n\nWould you like help improving any of these areas?'
+
+      // Open the chat and add the message
+      setIsOpen(true)
+      setMessages(prev => {
+        // If no messages, add welcome first
+        if (prev.length === 0) {
+          return [
+            {
+              role: 'assistant',
+              content: isArabic
+                ? 'مرحباً! 👋 إليك تحليل ملف ESG الخاص بك:'
+                : 'Hello! 👋 Here\'s your ESG profile analysis:',
+            },
+            {
+              role: 'assistant',
+              content: hintsMessage,
+              suggestedActions: [
+                {
+                  label: isArabic ? 'كيف أحسن الملف البيئي؟' : 'How to improve environmental?',
+                  action: '#'
+                },
+                {
+                  label: isArabic ? 'ما هي أفضل الممارسات؟' : 'What are best practices?',
+                  action: '#'
+                }
+              ]
+            }
+          ]
+        }
+        return [
+          ...prev,
+          {
+            role: 'assistant',
+            content: hintsMessage,
+            suggestedActions: [
+              {
+                label: isArabic ? 'اشرح أكثر' : 'Explain more',
+                action: '#'
+              }
+            ]
+          }
+        ]
+      })
+    }
+
+    window.addEventListener('esg-hints', handleESGHints as EventListener)
+    return () => {
+      window.removeEventListener('esg-hints', handleESGHints as EventListener)
+    }
+  }, [])
 
   // Add welcome message when chat opens for the first time
   useEffect(() => {
@@ -100,6 +212,18 @@ export default function AIChatAssistant() {
     { label: isRtl ? 'تتبع طلبي' : 'Track my application', query: 'How can I track my application status?' },
   ]
 
+  // Function to render message content with markdown-like formatting
+  const renderContent = (content: string) => {
+    // Split by ** for bold
+    const parts = content.split(/(\*\*.*?\*\*)/g)
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index}>{part.slice(2, -2)}</strong>
+      }
+      return <span key={index}>{part}</span>
+    })
+  }
+
   return (
     <>
       {/* Chat Button */}
@@ -151,26 +275,39 @@ export default function AIChatAssistant() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-2 ${
                     message.role === 'user'
                       ? 'bg-blue-600 text-white rounded-br-sm'
                       : 'bg-white border shadow-sm rounded-bl-sm'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">{renderContent(message.content)}</p>
 
                   {/* Suggested Actions */}
                   {message.suggestedActions && message.suggestedActions.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {message.suggestedActions.map((action, idx) => (
-                        <Link
-                          key={idx}
-                          href={action.action}
-                          onClick={() => setIsOpen(false)}
-                          className="block text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors text-center"
-                        >
-                          {action.label} →
-                        </Link>
+                        action.action === '#' ? (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setInput(action.label)
+                              setTimeout(() => sendMessage(), 100)
+                            }}
+                            className="block w-full text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors text-center"
+                          >
+                            {action.label} →
+                          </button>
+                        ) : (
+                          <Link
+                            key={idx}
+                            href={action.action}
+                            onClick={() => setIsOpen(false)}
+                            className="block text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors text-center"
+                          >
+                            {action.label} →
+                          </Link>
+                        )
                       ))}
                     </div>
                   )}

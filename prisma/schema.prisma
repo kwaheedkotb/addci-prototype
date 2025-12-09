@@ -44,11 +44,13 @@ model ReviewNote {
 }
 
 model Certificate {
-  id                String      @id @default(cuid())
-  applicationId     String      @unique
-  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  certificateNumber String      @unique
-  issuedAt          DateTime    @default(now())
+  id                  String      @id @default(cuid())
+  applicationId       String      @unique
+  application         Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  certificateNumber   String      @unique
+  issuedAt            DateTime    @default(now())
+  validUntil          DateTime?   // Certificate expiry date
+  renewalSuggestedAt  DateTime?   // Date to remind for renewal
 }
 
 model Service {
@@ -72,6 +74,8 @@ model ApplicationDocument {
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   type          String   // "ESG_POLICY", "REPORT", "CERTIFICATION", etc.
+  detectedType  String?  // AI-detected document type
+  confidence    Float?   // AI confidence score for detected type
   fileName      String
   filePath      String   // path to stored file
   ocrText       String?  // text extracted via OCR/ICR

@@ -13,16 +13,25 @@ export default function Header() {
   const isCustomer = pathname.startsWith('/customer')
   const isStaff = pathname.startsWith('/staff')
 
+  // On landing page, header is hidden (landing page has its own nav)
+  if (isHome) {
+    return null
+  }
+
   return (
-    <header className="bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg">
+    <header className="bg-gradient-to-r from-[#001B30] to-[#002040] text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2">
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <Link href="/" className="flex items-center gap-3">
+              {/* ADCCI-style Logo */}
+              <svg className="w-10 h-10" viewBox="0 0 48 48" fill="none">
+                <rect x="4" y="8" width="40" height="32" rx="4" stroke="white" strokeWidth="2" fill="none"/>
+                <path d="M12 20h24M12 28h24M12 36h16" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="36" cy="16" r="4" fill="white" fillOpacity="0.3" stroke="white" strokeWidth="1.5"/>
+                <path d="M24 8V4M20 6L24 4L28 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span className="font-bold text-lg">{t.common.appName}</span>
+              <span className="font-bold text-lg tracking-wide">{t.common.appName}</span>
             </Link>
 
             <nav className="hidden md:flex gap-1">
@@ -75,7 +84,7 @@ export default function Header() {
               onClick={() => setLocale('en')}
               className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                 locale === 'en'
-                  ? 'bg-white text-blue-700'
+                  ? 'bg-white text-[#001B30]'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >
@@ -85,7 +94,7 @@ export default function Header() {
               onClick={() => setLocale('ar')}
               className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                 locale === 'ar'
-                  ? 'bg-white text-blue-700'
+                  ? 'bg-white text-[#001B30]'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >

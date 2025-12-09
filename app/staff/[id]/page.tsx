@@ -50,6 +50,18 @@ export default function StaffApplicationDetail() {
   const [aiComment, setAiComment] = useState<string | null>(null)
   const [aiCommentLoading, setAiCommentLoading] = useState(false)
 
+  // Reviewer Assist State
+  const [reviewerAssist, setReviewerAssist] = useState<{
+    overallAssessment: string
+    recommendedDecision: 'APPROVE' | 'REQUEST_CORRECTIONS' | 'REJECT'
+    confidenceLevel: number
+    redFlags: string[]
+    strengths: string[]
+    extraDocumentsSuggested: string[]
+    detailedNotes: string
+  } | null>(null)
+  const [reviewerAssistLoading, setReviewerAssistLoading] = useState(false)
+
   // Action States
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
@@ -119,6 +131,37 @@ export default function StaffApplicationDetail() {
       console.error('AI comment error:', error)
     } finally {
       setAiCommentLoading(false)
+    }
+  }
+
+  async function runReviewerAssist() {
+    if (!application) return
+    setReviewerAssistLoading(true)
+    try {
+      const res = await fetch('/api/ai/reviewer-assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationId: application.id,
+          locale: 'en', // Could be dynamic based on user preference
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setReviewerAssist({
+          overallAssessment: data.overallAssessment,
+          recommendedDecision: data.recommendedDecision,
+          confidenceLevel: data.confidenceLevel,
+          redFlags: data.redFlags,
+          strengths: data.strengths,
+          extraDocumentsSuggested: data.extraDocumentsSuggested,
+          detailedNotes: data.detailedNotes,
+        })
+      }
+    } catch (error) {
+      console.error('Reviewer assist error:', error)
+    } finally {
+      setReviewerAssistLoading(false)
     }
   }
 
@@ -328,6 +371,146 @@ export default function StaffApplicationDetail() {
 
         {/* Sidebar - AI Tools & Actions */}
         <div className="space-y-6">
+          {/* AI Reviewer Assist - Advanced Analysis */}
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-6 py-4 border-b bg-gradient-to-r from-emerald-50 to-teal-50">
+              <h2 className="text-lg font-semibold text-emerald-900 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                AI Reviewer Assistant
+              </h2>
+            </div>
+            <div className="p-6">
+              <button
+                onClick={runReviewerAssist}
+                disabled={reviewerAssistLoading}
+                className="w-full px-4 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 shadow-lg"
+              >
+                <div className="font-semibold flex items-center justify-center gap-2">
+                  {reviewerAssistLoading ? (
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  )}
+                  {reviewerAssistLoading ? 'Analyzing Application...' : 'Run Full AI Analysis'}
+                </div>
+                <p className="text-sm text-emerald-100 mt-1">Get comprehensive ESG assessment with recommendations</p>
+              </button>
+
+              {/* Reviewer Assist Results */}
+              {reviewerAssist && (
+                <div className="mt-4 space-y-4">
+                  {/* Decision Recommendation */}
+                  <div className={`p-4 rounded-lg border-2 ${
+                    reviewerAssist.recommendedDecision === 'APPROVE' ? 'bg-green-50 border-green-300' :
+                    reviewerAssist.recommendedDecision === 'REQUEST_CORRECTIONS' ? 'bg-amber-50 border-amber-300' :
+                    'bg-red-50 border-red-300'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-gray-800">Recommended Decision</span>
+                      <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                        reviewerAssist.recommendedDecision === 'APPROVE' ? 'bg-green-200 text-green-800' :
+                        reviewerAssist.recommendedDecision === 'REQUEST_CORRECTIONS' ? 'bg-amber-200 text-amber-800' :
+                        'bg-red-200 text-red-800'
+                      }`}>
+                        {reviewerAssist.recommendedDecision.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">{reviewerAssist.overallAssessment}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Confidence:</span>
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all ${
+                            reviewerAssist.confidenceLevel >= 80 ? 'bg-green-500' :
+                            reviewerAssist.confidenceLevel >= 60 ? 'bg-amber-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${reviewerAssist.confidenceLevel}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium">{reviewerAssist.confidenceLevel}%</span>
+                    </div>
+                  </div>
+
+                  {/* Strengths */}
+                  {reviewerAssist.strengths.length > 0 && (
+                    <div className="bg-green-50 rounded-lg p-3">
+                      <h4 className="text-sm font-medium text-green-800 mb-2 flex items-center gap-1">
+                        <span>✅</span> Strengths
+                      </h4>
+                      <ul className="space-y-1">
+                        {reviewerAssist.strengths.map((s, i) => (
+                          <li key={i} className="text-sm text-green-700 flex items-start gap-2">
+                            <span className="text-green-500">•</span>
+                            {s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Red Flags */}
+                  {reviewerAssist.redFlags.length > 0 && (
+                    <div className="bg-red-50 rounded-lg p-3">
+                      <h4 className="text-sm font-medium text-red-800 mb-2 flex items-center gap-1">
+                        <span>🚩</span> Red Flags
+                      </h4>
+                      <ul className="space-y-1">
+                        {reviewerAssist.redFlags.map((r, i) => (
+                          <li key={i} className="text-sm text-red-700 flex items-start gap-2">
+                            <span className="text-red-500">•</span>
+                            {r}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Suggested Documents */}
+                  {reviewerAssist.extraDocumentsSuggested.length > 0 && (
+                    <div className="bg-blue-50 rounded-lg p-3">
+                      <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-1">
+                        <span>📄</span> Request Additional Documents
+                      </h4>
+                      <ul className="space-y-1">
+                        {reviewerAssist.extraDocumentsSuggested.map((d, i) => (
+                          <li key={i} className="text-sm text-blue-700 flex items-start gap-2">
+                            <span className="text-blue-500">•</span>
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Quick Action Based on Recommendation */}
+                  {canTakeAction && (
+                    <button
+                      onClick={() => updateStatus(
+                        reviewerAssist.recommendedDecision === 'APPROVE' ? 'APPROVED' :
+                        reviewerAssist.recommendedDecision === 'REQUEST_CORRECTIONS' ? 'CORRECTIONS_REQUESTED' : 'REJECTED'
+                      )}
+                      disabled={actionLoading !== null}
+                      className={`w-full py-2 rounded-lg font-medium transition-colors ${
+                        reviewerAssist.recommendedDecision === 'APPROVE' ? 'bg-green-600 text-white hover:bg-green-700' :
+                        reviewerAssist.recommendedDecision === 'REQUEST_CORRECTIONS' ? 'bg-amber-600 text-white hover:bg-amber-700' :
+                        'bg-red-600 text-white hover:bg-red-700'
+                      }`}
+                    >
+                      Apply Recommended Decision
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* AI Tools */}
           <div className="bg-white shadow rounded-lg overflow-hidden">
             <div className="px-6 py-4 border-b bg-purple-50">
