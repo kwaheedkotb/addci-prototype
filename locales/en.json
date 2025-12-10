@@ -209,6 +209,64 @@
     "requirements": "Requirements",
     "process": "Process",
     "esgOverview": "ESG Certificate Overview",
-    "esgDescription": "The ESG Certificate validates your organization's commitment to Environmental, Social, and Governance standards."
+    "esgDescription": "The ESG Certificate validates your organization's commitment to Environmental, Social, and Governance standards.",
+    "backToDirectory": "Back to Service Directory"
+  },
+  "esgDetail": {
+    "heroSubtitle": "Demonstrate your organization's commitment to sustainability with the official Abu Dhabi Chamber ESG certification.",
+    "startApplication": "Start Your ESG Application",
+    "askAI": "Ask AI about ESG Certification",
+    "whatYouNeed": "What You Will Need",
+    "required": "Required",
+    "optional": "Optional",
+    "needs": {
+      "tradeLicense": "Trade License",
+      "tradeLicenseDesc": "Valid trade license for business verification",
+      "esgPolicy": "ESG / Sustainability Policy",
+      "esgPolicyDesc": "Document outlining commitment to ESG",
+      "esgReport": "Latest ESG / Sustainability Report",
+      "esgReportDesc": "Performance, KPIs, targets (if available)",
+      "certifications": "Certifications",
+      "certificationsDesc": "ISO or other relevant certifications",
+      "supplierAssessments": "Supplier Assessments",
+      "supplierAssessmentsDesc": "Supply chain sustainability reviews",
+      "financialReport": "Financial Report",
+      "financialReportDesc": "Latest annual financial statements"
+    },
+    "whatESGCovers": "What ESG Covers",
+    "covers": {
+      "environmental": "Environmental",
+      "environmentalDesc": "Policies, energy, emissions, waste",
+      "social": "Social",
+      "socialDesc": "Workforce, safety, community",
+      "governance": "Governance",
+      "governanceDesc": "Board, compliance, policies"
+    },
+    "howItWorks": "How It Works",
+    "process": {
+      "step1Title": "Provide Business Info",
+      "step1Desc": "We can auto-fill from your documents",
+      "step2Title": "Describe ESG Practices",
+      "step2Desc": "AI prompts and hints guide you",
+      "step3Title": "Upload Evidence",
+      "step3Desc": "Single multi-file uploader; auto-classify",
+      "step4Title": "Submit for Certification",
+      "step4Desc": "Review & issue your ESG certificate"
+    },
+    "aiGuidance": "AI Guidance",
+    "aiQuestions": {
+      "docs": "Which documents do I need?",
+      "docsPrompt": "Which documents do I need for Chamber ESG Label?",
+      "time": "How long does the process take?",
+      "timePrompt": "How long does it typically take to get the Chamber ESG Label?",
+      "check": "Can you check my document list?",
+      "checkPrompt": "I have these documents: [paste your list here]. What is missing for ESG?"
+    },
+    "serviceInfo": "Service Information",
+    "platform": "Platform",
+    "department": "Department",
+    "type": "Type",
+    "typeInternal": "Internal",
+    "viewMyApplications": "View My Applications"
   }
 }

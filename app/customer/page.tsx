@@ -58,7 +58,7 @@ export default function CustomerDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* New Application Banner - Direct to Service Hub */}
-      <div className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-6 text-white">
+      <div className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 rounded-xl p-6 text-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold mb-1">
@@ -83,61 +83,62 @@ export default function CustomerDashboard() {
       </div>
 
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{t.customer.dashboard.title}</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{t.customer.dashboard.title}</h1>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--accent-green)' }}></div>
         </div>
       ) : applications.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="rounded-lg p-8 text-center theme-panel">
+          <svg className="mx-auto h-12 w-12" style={{ color: 'var(--muted)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p className="mt-4 text-gray-500">{t.customer.dashboard.noApplications}</p>
+          <p className="mt-4" style={{ color: 'var(--muted)' }}>{t.customer.dashboard.noApplications}</p>
         </div>
       ) : (
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="rounded-lg overflow-hidden theme-panel">
+          <table className="min-w-full" style={{ borderColor: 'var(--border)' }}>
+            <thead style={{ background: 'var(--panel-2)' }}>
               <tr>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.applicationId}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.organization}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.status}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.createdAt}
                 </th>
-                <th className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-end text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.common.actions}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {applications.map((app) => (
-                <tr key={app.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <tbody>
+              {applications.map((app, idx) => (
+                <tr key={app.id} className="hover:opacity-80 transition-opacity" style={{ borderTop: idx > 0 ? '1px solid var(--border)' : 'none' }}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" style={{ color: 'var(--text)' }}>
                     {app.id.slice(0, 8)}...
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {app.organizationName}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={app.status} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
                     <Link
                       href={`/customer/${app.id}`}
-                      className="text-emerald-600 hover:text-emerald-900"
+                      style={{ color: 'var(--accent-green)' }}
+                      className="hover:opacity-80"
                     >
                       {t.common.view}
                     </Link>

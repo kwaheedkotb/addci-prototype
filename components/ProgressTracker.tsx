@@ -50,8 +50,8 @@ export default function ProgressTracker({ status }: { status: string }) {
                         ? 'bg-red-500 text-white'
                         : typedStatus === 'CORRECTIONS_REQUESTED'
                         ? 'bg-orange-500 text-white'
-                        : 'bg-emerald-500 text-white ring-4 ring-emerald-100'
-                      : 'bg-gray-200 text-gray-500'
+                        : 'bg-emerald-500 text-white ring-4 ring-emerald-100 dark:ring-emerald-900'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                   }`}
                 >
                   {stepStatus === 'completed' ? (
@@ -64,7 +64,7 @@ export default function ProgressTracker({ status }: { status: string }) {
                 </div>
                 <span
                   className={`mt-2 text-xs font-medium text-center ${
-                    stepStatus === 'upcoming' ? 'text-gray-400' : 'text-gray-700'
+                    stepStatus === 'upcoming' ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   {item.label}
@@ -76,7 +76,7 @@ export default function ProgressTracker({ status }: { status: string }) {
                   className={`flex-1 h-1 mx-2 ${
                     getStepStatus(typedStatus, item.step + 1) !== 'upcoming'
                       ? 'bg-emerald-500'
-                      : 'bg-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700'
                   }`}
                 />
               )}

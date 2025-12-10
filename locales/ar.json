@@ -209,6 +209,64 @@
     "requirements": "المتطلبات",
     "process": "العملية",
     "esgOverview": "نظرة عامة على شهادة ESG",
-    "esgDescription": "شهادة ESG تؤكد التزام مؤسستك بمعايير البيئة والمسؤولية الاجتماعية والحوكمة."
+    "esgDescription": "شهادة ESG تؤكد التزام مؤسستك بمعايير البيئة والمسؤولية الاجتماعية والحوكمة.",
+    "backToDirectory": "العودة لدليل الخدمات"
+  },
+  "esgDetail": {
+    "heroSubtitle": "أظهر التزام مؤسستك بالاستدامة من خلال شهادة ESG الرسمية من غرفة أبوظبي.",
+    "startApplication": "ابدأ طلب شهادة ESG",
+    "askAI": "اسأل الذكاء الاصطناعي عن شهادة ESG",
+    "whatYouNeed": "ما ستحتاجه",
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "needs": {
+      "tradeLicense": "الرخصة التجارية",
+      "tradeLicenseDesc": "رخصة تجارية سارية للتحقق من الأعمال",
+      "esgPolicy": "سياسة ESG / الاستدامة",
+      "esgPolicyDesc": "وثيقة توضح الالتزام بـ ESG",
+      "esgReport": "أحدث تقرير ESG / الاستدامة",
+      "esgReportDesc": "الأداء، مؤشرات الأداء، الأهداف (إن وجدت)",
+      "certifications": "الشهادات",
+      "certificationsDesc": "شهادات ISO أو شهادات أخرى ذات صلة",
+      "supplierAssessments": "تقييمات الموردين",
+      "supplierAssessmentsDesc": "مراجعات استدامة سلسلة التوريد",
+      "financialReport": "التقرير المالي",
+      "financialReportDesc": "أحدث البيانات المالية السنوية"
+    },
+    "whatESGCovers": "ما يغطيه ESG",
+    "covers": {
+      "environmental": "البيئة",
+      "environmentalDesc": "السياسات، الطاقة، الانبعاثات، النفايات",
+      "social": "الاجتماعية",
+      "socialDesc": "القوى العاملة، السلامة، المجتمع",
+      "governance": "الحوكمة",
+      "governanceDesc": "مجلس الإدارة، الامتثال، السياسات"
+    },
+    "howItWorks": "كيف يعمل",
+    "process": {
+      "step1Title": "قدم معلومات الأعمال",
+      "step1Desc": "يمكننا الملء التلقائي من مستنداتك",
+      "step2Title": "صف ممارسات ESG",
+      "step2Desc": "إرشادات وتلميحات من الذكاء الاصطناعي",
+      "step3Title": "ارفع الأدلة",
+      "step3Desc": "رفع ملفات متعددة مع تصنيف تلقائي",
+      "step4Title": "قدم للحصول على الشهادة",
+      "step4Desc": "مراجعة وإصدار شهادة ESG"
+    },
+    "aiGuidance": "إرشادات الذكاء الاصطناعي",
+    "aiQuestions": {
+      "docs": "ما المستندات التي أحتاجها؟",
+      "docsPrompt": "ما المستندات التي أحتاجها لشهادة ESG من الغرفة؟",
+      "time": "كم تستغرق العملية؟",
+      "timePrompt": "كم تستغرق عادةً للحصول على شهادة ESG من الغرفة؟",
+      "check": "هل يمكنك التحقق من قائمة مستنداتي؟",
+      "checkPrompt": "لدي هذه المستندات: [الصق قائمتك هنا]. ما الذي ينقص لـ ESG؟"
+    },
+    "serviceInfo": "معلومات الخدمة",
+    "platform": "المنصة",
+    "department": "القسم",
+    "type": "النوع",
+    "typeInternal": "داخلي",
+    "viewMyApplications": "عرض طلباتي"
   }
 }

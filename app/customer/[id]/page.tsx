@@ -116,7 +116,7 @@ export default function CustomerApplicationDetail() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--accent-green)' }}></div>
       </div>
     )
   }
@@ -124,7 +124,7 @@ export default function CustomerApplicationDetail() {
   if (!application) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 text-center">
-        <p className="text-gray-500">Application not found</p>
+        <p style={{ color: 'var(--muted)' }}>Application not found</p>
       </div>
     )
   }
@@ -136,7 +136,8 @@ export default function CustomerApplicationDetail() {
       <div className="mb-6">
         <Link
           href="/customer"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center hover:opacity-80"
+          style={{ color: 'var(--muted)' }}
         >
           <svg className="w-5 h-5 me-2 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -145,19 +146,19 @@ export default function CustomerApplicationDetail() {
         </Link>
       </div>
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
+      <div className="shadow rounded-lg overflow-hidden theme-panel">
         {/* Header */}
-        <div className="px-6 py-4 border-b bg-gray-50 flex justify-between items-center">
+        <div className="px-6 py-4 flex justify-between items-center" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{t.customer.detail.title}</h1>
-            <p className="text-sm text-gray-500">ID: {application.id}</p>
+            <h1 className="text-xl font-bold" style={{ color: 'var(--text)' }}>{t.customer.detail.title}</h1>
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>ID: {application.id}</p>
           </div>
           <StatusBadge status={application.status} />
         </div>
 
         {/* Progress Tracker */}
-        <div className="px-6 py-6 border-b bg-white">
-          <h2 className="text-sm font-medium text-gray-500 mb-4">{t.customer.detail.progressTracker}</h2>
+        <div className="px-6 py-6" style={{ borderBottom: '1px solid var(--border)' }}>
+          <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--muted)' }}>{t.customer.detail.progressTracker}</h2>
           <ProgressTracker status={application.status} />
         </div>
 
@@ -217,33 +218,34 @@ export default function CustomerApplicationDetail() {
         <div className="px-6 py-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-500">{t.customer.form.applicantName}</label>
-              <p className="mt-1 text-gray-900">{application.applicantName}</p>
+              <label className="block text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.customer.form.applicantName}</label>
+              <p className="mt-1" style={{ color: 'var(--text)' }}>{application.applicantName}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-500">{t.customer.form.organizationName}</label>
-              <p className="mt-1 text-gray-900">{application.organizationName}</p>
+              <label className="block text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.customer.form.organizationName}</label>
+              <p className="mt-1" style={{ color: 'var(--text)' }}>{application.organizationName}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-500">{t.customer.form.email}</label>
-              <p className="mt-1 text-gray-900">{application.email}</p>
+              <label className="block text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.customer.form.email}</label>
+              <p className="mt-1" style={{ color: 'var(--text)' }}>{application.email}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-500">{t.customer.form.sector}</label>
-              <p className="mt-1 text-gray-900">{application.sector}</p>
+              <label className="block text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.customer.form.sector}</label>
+              <p className="mt-1" style={{ color: 'var(--text)' }}>{application.sector}</p>
             </div>
           </div>
 
           {/* Description - Editable if corrections requested */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-2">{t.customer.form.description}</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.customer.form.description}</label>
             {application.status === 'CORRECTIONS_REQUESTED' && editing ? (
               <div className="space-y-4">
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={6}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                 />
                 <div className="flex gap-4">
                   <button
@@ -276,7 +278,8 @@ export default function CustomerApplicationDetail() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setEditing(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                    className="px-4 py-2 rounded-lg hover:opacity-80"
+                    style={{ border: '1px solid var(--border)', color: 'var(--text)' }}
                   >
                     {t.common.cancel}
                   </button>
@@ -291,11 +294,12 @@ export default function CustomerApplicationDetail() {
               </div>
             ) : (
               <div>
-                <p className="text-gray-900 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{application.description}</p>
+                <p className="whitespace-pre-wrap p-4 rounded-lg" style={{ background: 'var(--panel-2)', color: 'var(--text)' }}>{application.description}</p>
                 {application.status === 'CORRECTIONS_REQUESTED' && (
                   <button
                     onClick={() => setEditing(true)}
-                    className="mt-4 inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+                    className="mt-4 inline-flex items-center gap-2"
+                    style={{ color: 'var(--accent-green)' }}
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -315,12 +319,12 @@ export default function CustomerApplicationDetail() {
           {/* Staff Notes */}
           {staffNotes.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-3">{t.customer.detail.staffNotes}</h3>
+              <h3 className="text-sm font-medium mb-3" style={{ color: 'var(--muted)' }}>{t.customer.detail.staffNotes}</h3>
               <div className="space-y-3">
                 {staffNotes.map((note) => (
-                  <div key={note.id} className="bg-blue-50 border border-blue-100 rounded-lg p-4">
-                    <p className="text-gray-700 whitespace-pre-wrap">{note.note}</p>
-                    <p className="text-xs text-gray-500 mt-2">
+                  <div key={note.id} className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg p-4">
+                    <p className="whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>{note.note}</p>
+                    <p className="text-xs mt-2" style={{ color: 'var(--muted)' }}>
                       {new Date(note.createdAt).toLocaleString()}
                     </p>
                   </div>

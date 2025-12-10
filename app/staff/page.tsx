@@ -50,20 +50,20 @@ export default function StaffDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{t.staff.dashboard.title}</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{t.staff.dashboard.title}</h1>
       </div>
 
       {/* Filters */}
-      <div className="bg-white shadow rounded-lg p-4 mb-6">
+      <div className="rounded-lg p-4 mb-6 theme-panel">
         <div className="flex flex-wrap gap-4 items-center">
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--muted)' }}>
               {t.staff.dashboard.filterByStatus}
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               {STATUSES.map((status) => (
                 <option key={status} value={status}>
@@ -73,7 +73,7 @@ export default function StaffDashboard() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--muted)' }}>
               {t.staff.dashboard.sortBy}
             </label>
             <select
@@ -83,7 +83,7 @@ export default function StaffDashboard() {
                 setSortBy(newSortBy)
                 setSortOrder(newSortOrder)
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="createdAt-desc">{t.staff.dashboard.createdDateDesc}</option>
               <option value="createdAt-asc">{t.staff.dashboard.createdDateAsc}</option>
@@ -96,65 +96,66 @@ export default function StaffDashboard() {
 
       {loading ? (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--primary)' }}></div>
         </div>
       ) : applications.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <p className="text-gray-500">{t.common.noData}</p>
+        <div className="rounded-lg p-8 text-center theme-panel">
+          <p style={{ color: 'var(--muted)' }}>{t.common.noData}</p>
         </div>
       ) : (
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="rounded-lg overflow-hidden theme-panel">
+          <table className="min-w-full">
+            <thead style={{ background: 'var(--panel-2)' }}>
               <tr>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.applicationId}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.form.applicantName}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.organization}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.form.sector}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.status}
                 </th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-start text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.customer.dashboard.createdAt}
                 </th>
-                <th className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-end text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
                   {t.common.actions}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {applications.map((app) => (
-                <tr key={app.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <tbody>
+              {applications.map((app, idx) => (
+                <tr key={app.id} className="hover:opacity-80 transition-opacity" style={{ borderTop: idx > 0 ? '1px solid var(--border)' : 'none' }}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" style={{ color: 'var(--text)' }}>
                     {app.id.slice(0, 8)}...
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {app.applicantName}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {app.organizationName}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {app.sector}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={app.status} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'var(--muted)' }}>
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
                     <Link
                       href={`/staff/${app.id}`}
-                      className="text-blue-600 hover:text-blue-900"
+                      style={{ color: 'var(--primary)' }}
+                      className="hover:opacity-80"
                     >
                       {t.common.view}
                     </Link>

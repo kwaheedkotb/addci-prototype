@@ -703,21 +703,21 @@ ${formData.governanceProfile?.description ?? ''}
       <button
         type="button"
         onClick={() => toggleSection(section)}
-        className={`w-full flex items-center justify-between p-4 rounded-lg transition-all ${
-          isOpen
-            ? 'bg-blue-50 border-blue-200'
-            : 'bg-white hover:bg-gray-50 border-gray-200'
-        } border`}
+        className={`w-full flex items-center justify-between p-4 rounded-lg transition-all border`}
+        style={{
+          background: isOpen ? 'var(--accent-green-10, rgba(16, 185, 129, 0.1))' : 'var(--panel)',
+          borderColor: isOpen ? 'var(--accent-green)' : 'var(--border)',
+        }}
         aria-expanded={isOpen}
         aria-controls={`section-${section}`}
       >
         <div className="flex items-center gap-3">
           <span className="text-xl">{icon}</span>
-          <span className={`font-medium ${isOpen ? 'text-blue-900' : 'text-gray-900'}`}>
+          <span className="font-medium" style={{ color: isOpen ? 'var(--accent-green)' : 'var(--text)' }}>
             {title}
           </span>
           {isComplete && (
-            <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
@@ -726,7 +726,8 @@ ${formData.governanceProfile?.description ?? ''}
           )}
         </div>
         <svg
-          className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''} ${isOpen ? 'text-blue-600' : 'text-gray-400'}`}
+          className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          style={{ color: isOpen ? 'var(--accent-green)' : 'var(--muted)' }}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -738,23 +739,24 @@ ${formData.governanceProfile?.description ?? ''}
   }
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isRtl ? 'rtl' : 'ltr'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen ${isRtl ? 'rtl' : 'ltr'}`} dir={isRtl ? 'rtl' : 'ltr'} style={{ background: 'var(--bg)' }}>
       {/* Sticky Progress Bar */}
-      <div className="sticky top-0 z-40 bg-white border-b shadow-sm">
+      <div className="sticky top-0 z-40 shadow-sm" style={{ background: 'var(--panel)', borderBottom: '1px solid var(--border)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <Link
                 href={`/services/${params.id}`}
-                className="text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                className="flex items-center gap-1"
+                style={{ color: 'var(--accent-green)' }}
               >
                 <svg className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 {t.common.back}
               </Link>
-              <span className="text-gray-300">|</span>
-              <h1 className="font-semibold text-gray-900">
+              <span style={{ color: 'var(--border)' }}>|</span>
+              <h1 className="font-semibold" style={{ color: 'var(--text)' }}>
                 {isRtl ? 'طلب شهادة ESG' : 'ESG Certificate Application'}
               </h1>
             </div>
@@ -762,12 +764,12 @@ ${formData.governanceProfile?.description ?? ''}
               <span className={`text-sm font-medium ${progress >= 100 ? 'text-green-600' : 'text-blue-600'}`}>
                 {progress}%
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm" style={{ color: 'var(--muted)' }}>
                 {isRtl ? 'مكتمل' : 'complete'}
               </span>
             </div>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--panel-2)' }}>
             <div
               className={`h-full transition-all duration-500 ${progress >= 100 ? 'bg-green-500' : 'bg-blue-500'}`}
               style={{ width: `${progress}%` }}
@@ -775,20 +777,20 @@ ${formData.governanceProfile?.description ?? ''}
           </div>
           {/* Section indicators */}
           <div className="flex justify-between mt-2 px-1">
-            <div className={`flex items-center gap-1 text-xs ${sectionStatus.applicant ? 'text-green-600' : 'text-gray-400'}`}>
-              <span className={`w-2 h-2 rounded-full ${sectionStatus.applicant ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`flex items-center gap-1 text-xs ${sectionStatus.applicant ? 'text-green-600' : ''}`} style={!sectionStatus.applicant ? { color: 'var(--muted)' } : {}}>
+              <span className={`w-2 h-2 rounded-full ${sectionStatus.applicant ? 'bg-green-500' : ''}`} style={!sectionStatus.applicant ? { background: 'var(--border)' } : {}} />
               {isRtl ? 'معلومات' : 'Info'}
             </div>
-            <div className={`flex items-center gap-1 text-xs ${sectionStatus.esg ? 'text-green-600' : 'text-gray-400'}`}>
-              <span className={`w-2 h-2 rounded-full ${sectionStatus.esg ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`flex items-center gap-1 text-xs ${sectionStatus.esg ? 'text-green-600' : ''}`} style={!sectionStatus.esg ? { color: 'var(--muted)' } : {}}>
+              <span className={`w-2 h-2 rounded-full ${sectionStatus.esg ? 'bg-green-500' : ''}`} style={!sectionStatus.esg ? { background: 'var(--border)' } : {}} />
               ESG
             </div>
-            <div className={`flex items-center gap-1 text-xs ${sectionStatus.documents ? 'text-green-600' : 'text-gray-400'}`}>
-              <span className={`w-2 h-2 rounded-full ${sectionStatus.documents ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`flex items-center gap-1 text-xs ${sectionStatus.documents ? 'text-green-600' : ''}`} style={!sectionStatus.documents ? { color: 'var(--muted)' } : {}}>
+              <span className={`w-2 h-2 rounded-full ${sectionStatus.documents ? 'bg-green-500' : ''}`} style={!sectionStatus.documents ? { background: 'var(--border)' } : {}} />
               {isRtl ? 'مستندات' : 'Docs'}
             </div>
-            <div className={`flex items-center gap-1 text-xs ${sectionStatus.review ? 'text-green-600' : 'text-gray-400'}`}>
-              <span className={`w-2 h-2 rounded-full ${sectionStatus.review ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`flex items-center gap-1 text-xs ${sectionStatus.review ? 'text-green-600' : ''}`} style={!sectionStatus.review ? { color: 'var(--muted)' } : {}}>
+              <span className={`w-2 h-2 rounded-full ${sectionStatus.review ? 'bg-green-500' : ''}`} style={!sectionStatus.review ? { background: 'var(--border)' } : {}} />
               {isRtl ? 'إرسال' : 'Submit'}
             </div>
           </div>
@@ -797,7 +799,7 @@ ${formData.governanceProfile?.description ?? ''}
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
         {/* Section 1: Applicant Info */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm" style={{ background: 'var(--panel)' }}>
           <AccordionHeader
             section="applicant"
             title={isRtl ? '1. معلومات مقدم الطلب' : '1. Applicant Information'}
@@ -805,9 +807,9 @@ ${formData.governanceProfile?.description ?? ''}
             isComplete={sectionStatus.applicant}
           />
           {openSection === 'applicant' && (
-            <div id="section-applicant" className="p-6 border-t border-gray-100" role="region" aria-labelledby="applicant-header">
+            <div id="section-applicant" className="p-6" style={{ borderTop: '1px solid var(--border)' }} role="region" aria-labelledby="applicant-header">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>
                   {isRtl ? 'أدخل بيانات مقدم الطلب والمؤسسة' : 'Enter applicant and organization details'}
                 </p>
                 <button
@@ -824,8 +826,8 @@ ${formData.governanceProfile?.description ?? ''}
               </div>
 
               {showAutoFillPanel && autoFillSuggestions && (
-                <div className="bg-green-50 rounded-lg p-3 mb-4 border border-green-200">
-                  <div className="flex items-center gap-2 text-green-700">
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 mb-4 border border-green-200 dark:border-green-800">
+                  <div className="flex items-center gap-2 text-green-700 dark:text-green-400">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -838,89 +840,95 @@ ${formData.governanceProfile?.description ?? ''}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {t.customer.form.applicantName} *
                   </label>
                   <input
                     type="text"
                     value={formData.applicantName}
                     onChange={(e) => handleInputChange('applicantName', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.applicantName ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.applicantName ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.applicantName ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                     placeholder={t.customer.form.applicantNamePlaceholder}
                   />
                   {errors.applicantName && <p className="text-red-500 text-sm mt-1">{errors.applicantName}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {t.customer.form.organizationName} *
                   </label>
                   <input
                     type="text"
                     value={formData.organizationName}
                     onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.organizationName ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.organizationName ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.organizationName ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                     placeholder={t.customer.form.organizationNamePlaceholder}
                   />
                   {errors.organizationName && <p className="text-red-500 text-sm mt-1">{errors.organizationName}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {t.customer.form.email} *
                   </label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.email ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.email ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                     placeholder={t.customer.form.emailPlaceholder}
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {isRtl ? 'رقم الهاتف' : 'Phone Number'} *
                   </label>
                   <input
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.phoneNumber ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.phoneNumber ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                     placeholder="+971 XX XXX XXXX"
                   />
                   {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {isRtl ? 'رقم الرخصة التجارية' : 'Trade License Number'} *
                   </label>
                   <input
                     type="text"
                     value={formData.tradeLicenseNumber}
                     onChange={(e) => handleInputChange('tradeLicenseNumber', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.tradeLicenseNumber ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.tradeLicenseNumber ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.tradeLicenseNumber ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                     placeholder={isRtl ? 'أدخل رقم الرخصة التجارية' : 'Enter trade license number'}
                   />
                   {errors.tradeLicenseNumber && <p className="text-red-500 text-sm mt-1">{errors.tradeLicenseNumber}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {isRtl ? 'الدولة' : 'Country'} *
                   </label>
                   <select
                     value={formData.country}
                     onChange={(e) => handleInputChange('country', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.country ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.country ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                   >
                     <option value="">{isRtl ? 'اختر الدولة' : 'Select country'}</option>
                     {countries.map(c => (
@@ -931,14 +939,15 @@ ${formData.governanceProfile?.description ?? ''}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {t.customer.form.sector} *
                   </label>
                   <select
                     value={formData.sector}
                     onChange={(e) => handleInputChange('sector', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                      ${errors.sector ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                      ${errors.sector ? 'border-red-500' : ''}`}
+                    style={{ background: 'var(--panel-2)', border: `1px solid ${errors.sector ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                   >
                     <option value="">{t.customer.form.sectorPlaceholder}</option>
                     {sectors.map(s => (
@@ -951,14 +960,15 @@ ${formData.governanceProfile?.description ?? ''}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text)' }}>
                     {isRtl ? 'القطاع الفرعي' : 'Sub-sector'} ({isRtl ? 'اختياري' : 'Optional'})
                   </label>
                   <input
                     type="text"
                     value={formData.subSector}
                     onChange={(e) => handleInputChange('subSector', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'مثال: الطاقة المتجددة' : 'e.g., Renewable Energy'}
                   />
                 </div>
@@ -968,7 +978,7 @@ ${formData.governanceProfile?.description ?? ''}
                 <button
                   type="button"
                   onClick={() => setOpenSection('esg')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                 >
                   {isRtl ? 'التالي: ملف ESG' : 'Next: ESG Profile'}
                   <svg className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -981,7 +991,7 @@ ${formData.governanceProfile?.description ?? ''}
         </div>
 
         {/* Section 2: ESG Profile */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm" style={{ background: 'var(--panel)' }}>
           <AccordionHeader
             section="esg"
             title={isRtl ? '2. ملف ESG' : '2. ESG Profile'}
@@ -989,9 +999,9 @@ ${formData.governanceProfile?.description ?? ''}
             isComplete={sectionStatus.esg}
           />
           {openSection === 'esg' && (
-            <div id="section-esg" className="p-6 border-t border-gray-100" role="region" aria-labelledby="esg-header">
+            <div id="section-esg" className="p-6" style={{ borderTop: '1px solid var(--border)' }} role="region" aria-labelledby="esg-header">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>
                   {isRtl ? 'وصف مبادرات ESG الخاصة بمؤسستك' : 'Describe your organization\'s ESG initiatives'}
                 </p>
                 <div className="flex gap-2">
@@ -1011,12 +1021,12 @@ ${formData.governanceProfile?.description ?? ''}
 
               {/* Compliance Score Panel */}
               {complianceScore && (
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-200 mb-6">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-800 mb-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="relative w-16 h-16">
                         <svg className="w-16 h-16 transform -rotate-90">
-                          <circle cx="32" cy="32" r="28" stroke="#e5e7eb" strokeWidth="6" fill="none" />
+                          <circle cx="32" cy="32" r="28" stroke="var(--border)" strokeWidth="6" fill="none" />
                           <circle
                             cx="32" cy="32" r="28"
                             stroke={complianceScore.readinessColor}
@@ -1036,12 +1046,12 @@ ${formData.governanceProfile?.description ?? ''}
                         <p className="font-semibold" style={{ color: complianceScore.readinessColor }}>
                           {complianceScore.readinessLevel}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs" style={{ color: 'var(--muted)' }}>
                           {isRtl ? `من ${complianceScore.maxScore}` : `of ${complianceScore.maxScore}`}
                         </p>
                       </div>
                     </div>
-                    <button onClick={() => setComplianceScore(null)} className="text-gray-400 hover:text-gray-600">
+                    <button onClick={() => setComplianceScore(null)} style={{ color: 'var(--muted)' }} className="hover:opacity-80">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -1052,13 +1062,13 @@ ${formData.governanceProfile?.description ?? ''}
 
               {/* Sector Templates */}
               {sectorTemplate && formData.sector && (
-                <div className="bg-amber-50 rounded-lg p-4 border border-amber-200 mb-6">
-                  <h4 className="text-sm font-medium text-amber-800 mb-2">
+                <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800 mb-6">
+                  <h4 className="text-sm font-medium text-amber-800 dark:text-amber-400 mb-2">
                     📊 {isRtl ? 'مؤشرات شائعة لهذا القطاع:' : 'Common KPIs for this sector:'}
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {sectorTemplate.commonKPIs.slice(0, 5).map((kpi, i) => (
-                      <span key={i} className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
+                      <span key={i} className="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-1 rounded-full">
                         {kpi}
                       </span>
                     ))}
@@ -1067,9 +1077,9 @@ ${formData.governanceProfile?.description ?? ''}
               )}
 
               {/* Environmental */}
-              <div className="bg-green-50 rounded-lg p-4 mb-4">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-4 border border-green-100 dark:border-green-800">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-green-800 flex items-center gap-2">
+                  <h3 className="font-semibold text-green-800 dark:text-green-400 flex items-center gap-2">
                     <span>🌿</span>
                     {isRtl ? 'البيئة (E)' : 'Environmental (E)'}
                   </h3>
@@ -1086,8 +1096,8 @@ ${formData.governanceProfile?.description ?? ''}
                   value={formData.environmentalProfile?.description ?? ''}
                   onChange={(e) => handleProfileChange('environmentalProfile', 'description', e.target.value)}
                   rows={3}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 mb-3
-                    ${errors.envDescription ? 'border-red-500' : 'border-gray-300'}`}
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 mb-3"
+                  style={{ background: 'var(--panel-2)', border: `1px solid ${errors.envDescription ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                   placeholder={isRtl ? 'صف جهود الاستدامة البيئية...' : 'Describe environmental sustainability efforts...'}
                 />
                 {errors.envDescription && <p className="text-red-500 text-sm mb-2">{errors.envDescription}</p>}
@@ -1096,37 +1106,41 @@ ${formData.governanceProfile?.description ?? ''}
                     type="text"
                     value={formData.environmentalProfile?.carbonEmissions ?? ''}
                     onChange={(e) => handleProfileChange('environmentalProfile', 'carbonEmissions', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-green-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'انبعاثات الكربون' : 'Carbon emissions'}
                   />
                   <input
                     type="text"
                     value={formData.environmentalProfile?.energyReduction ?? ''}
                     onChange={(e) => handleProfileChange('environmentalProfile', 'energyReduction', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-green-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'تخفيض الطاقة' : 'Energy reduction'}
                   />
                   <input
                     type="text"
                     value={formData.environmentalProfile?.wasteManagement ?? ''}
                     onChange={(e) => handleProfileChange('environmentalProfile', 'wasteManagement', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-green-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'إدارة النفايات' : 'Waste management'}
                   />
                   <input
                     type="text"
                     value={formData.environmentalProfile?.waterConservation ?? ''}
                     onChange={(e) => handleProfileChange('environmentalProfile', 'waterConservation', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-green-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'الحفاظ على المياه' : 'Water conservation'}
                   />
                 </div>
               </div>
 
               {/* Social */}
-              <div className="bg-blue-50 rounded-lg p-4 mb-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-4 border border-blue-100 dark:border-blue-800">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-blue-800 flex items-center gap-2">
+                  <h3 className="font-semibold text-blue-800 dark:text-blue-400 flex items-center gap-2">
                     <span>👥</span>
                     {isRtl ? 'الاجتماعية (S)' : 'Social (S)'}
                   </h3>
@@ -1143,8 +1157,8 @@ ${formData.governanceProfile?.description ?? ''}
                   value={formData.socialProfile?.description ?? ''}
                   onChange={(e) => handleProfileChange('socialProfile', 'description', e.target.value)}
                   rows={3}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-3
-                    ${errors.socialDescription ? 'border-red-500' : 'border-gray-300'}`}
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 mb-3"
+                  style={{ background: 'var(--panel-2)', border: `1px solid ${errors.socialDescription ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                   placeholder={isRtl ? 'صف برامج المسؤولية الاجتماعية...' : 'Describe social responsibility programs...'}
                 />
                 {errors.socialDescription && <p className="text-red-500 text-sm mb-2">{errors.socialDescription}</p>}
@@ -1153,37 +1167,41 @@ ${formData.governanceProfile?.description ?? ''}
                     type="text"
                     value={formData.socialProfile?.workforceDiversity ?? ''}
                     onChange={(e) => handleProfileChange('socialProfile', 'workforceDiversity', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-blue-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'تنوع القوى العاملة' : 'Workforce diversity'}
                   />
                   <input
                     type="text"
                     value={formData.socialProfile?.communityPrograms ?? ''}
                     onChange={(e) => handleProfileChange('socialProfile', 'communityPrograms', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-blue-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'برامج المجتمع' : 'Community programs'}
                   />
                   <input
                     type="text"
                     value={formData.socialProfile?.healthAndSafety ?? ''}
                     onChange={(e) => handleProfileChange('socialProfile', 'healthAndSafety', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-blue-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'الصحة والسلامة' : 'Health & safety'}
                   />
                   <input
                     type="text"
                     value={formData.socialProfile?.employeeWellbeing ?? ''}
                     onChange={(e) => handleProfileChange('socialProfile', 'employeeWellbeing', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-blue-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'رفاهية الموظفين' : 'Employee wellbeing'}
                   />
                 </div>
               </div>
 
               {/* Governance */}
-              <div className="bg-purple-50 rounded-lg p-4">
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-100 dark:border-purple-800">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-purple-800 flex items-center gap-2">
+                  <h3 className="font-semibold text-purple-800 dark:text-purple-400 flex items-center gap-2">
                     <span>⚖️</span>
                     {isRtl ? 'الحوكمة (G)' : 'Governance (G)'}
                   </h3>
@@ -1200,8 +1218,8 @@ ${formData.governanceProfile?.description ?? ''}
                   value={formData.governanceProfile?.description ?? ''}
                   onChange={(e) => handleProfileChange('governanceProfile', 'description', e.target.value)}
                   rows={3}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 mb-3
-                    ${errors.govDescription ? 'border-red-500' : 'border-gray-300'}`}
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 mb-3"
+                  style={{ background: 'var(--panel-2)', border: `1px solid ${errors.govDescription ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                   placeholder={isRtl ? 'صف هيكل الحوكمة وممارسات الامتثال...' : 'Describe governance structure and compliance practices...'}
                 />
                 {errors.govDescription && <p className="text-red-500 text-sm mb-2">{errors.govDescription}</p>}
@@ -1210,28 +1228,32 @@ ${formData.governanceProfile?.description ?? ''}
                     type="text"
                     value={formData.governanceProfile?.boardStructure ?? ''}
                     onChange={(e) => handleProfileChange('governanceProfile', 'boardStructure', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-purple-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'هيكل المجلس' : 'Board structure'}
                   />
                   <input
                     type="text"
                     value={formData.governanceProfile?.complianceFrameworks ?? ''}
                     onChange={(e) => handleProfileChange('governanceProfile', 'complianceFrameworks', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-purple-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'أطر الامتثال' : 'Compliance frameworks'}
                   />
                   <input
                     type="text"
                     value={formData.governanceProfile?.riskManagement ?? ''}
                     onChange={(e) => handleProfileChange('governanceProfile', 'riskManagement', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-purple-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'إدارة المخاطر' : 'Risk management'}
                   />
                   <input
                     type="text"
                     value={formData.governanceProfile?.transparency ?? ''}
                     onChange={(e) => handleProfileChange('governanceProfile', 'transparency', e.target.value)}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
+                    className="px-3 py-1.5 text-sm rounded focus:ring-2 focus:ring-purple-500"
+                    style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     placeholder={isRtl ? 'الشفافية' : 'Transparency'}
                   />
                 </div>
@@ -1241,14 +1263,15 @@ ${formData.governanceProfile?.description ?? ''}
                 <button
                   type="button"
                   onClick={() => setOpenSection('applicant')}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                  className="px-6 py-2 rounded-lg font-medium transition-colors"
+                  style={{ background: 'var(--panel-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
                 >
                   {t.common.back}
                 </button>
                 <button
                   type="button"
                   onClick={() => setOpenSection('documents')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                 >
                   {isRtl ? 'التالي: المستندات' : 'Next: Documents'}
                   <svg className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1261,7 +1284,7 @@ ${formData.governanceProfile?.description ?? ''}
         </div>
 
         {/* Section 3: Documents */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm" style={{ background: 'var(--panel)' }}>
           <AccordionHeader
             section="documents"
             title={isRtl ? '3. المستندات' : '3. Documents'}
@@ -1269,80 +1292,80 @@ ${formData.governanceProfile?.description ?? ''}
             isComplete={sectionStatus.documents}
           />
           {openSection === 'documents' && (
-            <div id="section-documents" className="p-6 border-t border-gray-100" role="region" aria-labelledby="documents-header">
+            <div id="section-documents" className="p-6" style={{ borderTop: '1px solid var(--border)' }} role="region" aria-labelledby="documents-header">
               {/* Required Documents */}
-              <div className="bg-slate-50 border border-slate-200 rounded p-2.5 mb-3">
+              <div className="bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded p-2.5 mb-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <svg className="w-3.5 h-3.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-3.5 h-3.5 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <h3 className="font-medium text-gray-800 text-xs">
+                  <h3 className="font-medium text-xs" style={{ color: 'var(--text)' }}>
                     {isRtl ? 'المستندات المطلوبة' : 'Required Documents'}
                   </h3>
                   <span className="text-red-500 text-[10px]">*</span>
                 </div>
                 <div className="grid grid-cols-2 gap-1 text-[11px]">
-                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'سياسة ESG / الاستدامة' : 'ESG / Sustainability Policy'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'وثيقة التزام بممارسات ESG' : 'ESG commitment document'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'سياسة ESG / الاستدامة' : 'ESG / Sustainability Policy'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'وثيقة التزام بممارسات ESG' : 'ESG commitment document'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أحدث تقرير ESG / الاستدامة' : 'Latest ESG / Sustainability Report'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'تقرير أداء الاستدامة السنوي' : 'Annual sustainability report'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'أحدث تقرير ESG / الاستدامة' : 'Latest ESG / Sustainability Report'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'تقرير أداء الاستدامة السنوي' : 'Annual sustainability report'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'سياسة الحوكمة أو الأخلاقيات' : 'Governance or Ethics Policy'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'إطار الحوكمة ومدونة السلوك' : 'Governance framework & code of conduct'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'سياسة الحوكمة أو الأخلاقيات' : 'Governance or Ethics Policy'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'إطار الحوكمة ومدونة السلوك' : 'Governance framework & code of conduct'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-slate-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'الرخصة التجارية' : 'Trade License'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'رخصة سارية للتحقق من الهوية' : 'Valid license for verification'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'الرخصة التجارية' : 'Trade License'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'رخصة سارية للتحقق من الهوية' : 'Valid license for verification'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Optional Documents */}
-              <div className="bg-emerald-50 border border-emerald-200 rounded p-2.5 mb-3">
+              <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded p-2.5 mb-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="font-medium text-gray-800 text-xs">
+                  <h3 className="font-medium text-emerald-800 dark:text-emerald-400 text-xs">
                     {isRtl ? 'مستندات اختيارية موصى بها' : 'Optional but Recommended'}
                   </h3>
                 </div>
                 <div className="grid grid-cols-2 gap-1 text-[11px]">
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أدلة الأداء البيئي' : 'Environmental Performance Evidence'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'البصمة الكربونية، تقارير الطاقة' : 'Carbon footprint, energy reports'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'أدلة الأداء البيئي' : 'Environmental Performance Evidence'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'البصمة الكربونية، تقارير الطاقة' : 'Carbon footprint, energy reports'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'وثائق الأثر الاجتماعي' : 'Social Impact Documentation'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'سجلات HSE، رفاهية العمال' : 'HSE records, worker welfare'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'وثائق الأثر الاجتماعي' : 'Social Impact Documentation'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'سجلات HSE، رفاهية العمال' : 'HSE records, worker welfare'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'الشهادات' : 'Certifications'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'ISO 14001، ISO 45001، جوائز' : 'ISO 14001, ISO 45001, awards'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'الشهادات' : 'Certifications'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'ISO 14001، ISO 45001، جوائز' : 'ISO 14001, ISO 45001, awards'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'أدلة حوكمة إضافية' : 'Additional Governance Evidence'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'سياسات المخاطر ومكافحة الفساد' : 'Risk & anti-corruption policies'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'أدلة حوكمة إضافية' : 'Additional Governance Evidence'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'سياسات المخاطر ومكافحة الفساد' : 'Risk & anti-corruption policies'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'تقييمات استدامة الموردين' : 'Supplier Sustainability Assessments'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'تقييمات ESG للموردين' : 'ESG assessments of suppliers'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'تقييمات استدامة الموردين' : 'Supplier Sustainability Assessments'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'تقييمات ESG للموردين' : 'ESG assessments of suppliers'}</p>
                   </div>
-                  <div className="bg-white rounded px-2 py-1 border border-emerald-100">
-                    <p className="font-medium text-gray-800 leading-tight">{isRtl ? 'التقرير المالي السنوي' : 'Annual Financial Report'}</p>
-                    <p className="text-gray-500 leading-tight">{isRtl ? 'بيانات مالية مدققة' : 'Audited financial statements'}</p>
+                  <div className="rounded px-2 py-1" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
+                    <p className="font-medium leading-tight" style={{ color: 'var(--text)' }}>{isRtl ? 'التقرير المالي السنوي' : 'Annual Financial Report'}</p>
+                    <p className="leading-tight" style={{ color: 'var(--muted)' }}>{isRtl ? 'بيانات مالية مدققة' : 'Audited financial statements'}</p>
                   </div>
                 </div>
                 {/* Incentive box */}
-                <div className="mt-1.5 bg-emerald-100 rounded px-2 py-1 flex items-center gap-1.5">
-                  <svg className="w-3 h-3 text-emerald-700 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="mt-1.5 bg-emerald-100 dark:bg-emerald-900/40 rounded px-2 py-1 flex items-center gap-1.5">
+                  <svg className="w-3 h-3 text-emerald-700 dark:text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-[10px] text-emerald-800">
+                  <p className="text-[10px] text-emerald-800 dark:text-emerald-300">
                     {isRtl
                       ? 'تحميل المستندات الاختيارية قد يزيد من درجتك النهائية.'
                       : 'Uploading optional documents may increase your final score.'}
@@ -1351,21 +1374,21 @@ ${formData.governanceProfile?.description ?? ''}
               </div>
 
               {/* Upload Area */}
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-all mb-4">
+              <div className="border-2 border-dashed rounded-xl p-6 text-center transition-all mb-4 hover:border-emerald-400" style={{ borderColor: 'var(--border)' }}>
                 <label className="cursor-pointer block">
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
                     </div>
-                    <p className="font-medium text-gray-700">
+                    <p className="font-medium" style={{ color: 'var(--text)' }}>
                       {isRtl ? 'اسحب وأفلت الملفات هنا' : 'Drag and drop files here'}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm" style={{ color: 'var(--muted)' }}>
                       {isRtl ? 'أو انقر للتصفح' : 'or click to browse'}
                     </p>
-                    <span className="mt-2 inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                    <span className="mt-2 inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 text-sm">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
@@ -1383,8 +1406,8 @@ ${formData.governanceProfile?.description ?? ''}
               </div>
 
               {/* AI Classification Note */}
-              <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-2 mb-4">
-                <div className="flex items-center gap-2 text-indigo-700 text-sm">
+              <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-2 mb-4">
+                <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-400 text-sm">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
@@ -1395,17 +1418,17 @@ ${formData.governanceProfile?.description ?? ''}
               {/* Uploaded Documents List */}
               {formData.documents.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="font-medium text-gray-800 text-sm">
+                  <h3 className="font-medium text-sm" style={{ color: 'var(--text)' }}>
                     📁 {isRtl ? `المستندات المحملة (${formData.documents.length})` : `Uploaded Documents (${formData.documents.length})`}
                   </h3>
                   {formData.documents.map((doc, idx) => (
-                    <div key={doc.fileId || idx} className="bg-white border rounded-lg p-3">
+                    <div key={doc.fileId || idx} className="rounded-lg p-3" style={{ background: 'var(--panel-2)', border: '1px solid var(--border)' }}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="text-lg">📄</span>
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">{doc.fileName}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="font-medium text-sm" style={{ color: 'var(--text)' }}>{doc.fileName}</p>
+                            <p className="text-xs" style={{ color: 'var(--muted)' }}>
                               {doc.ocrStatus === 'processing'
                                 ? (isRtl ? 'جاري التحليل...' : 'Analyzing...')
                                 : doc.detectedType && doc.detectedType !== 'PENDING'
@@ -1416,7 +1439,8 @@ ${formData.governanceProfile?.description ?? ''}
                         </div>
                         <button
                           onClick={() => removeDocument(idx)}
-                          className="p-1 text-gray-400 hover:text-red-500 rounded"
+                          className="p-1 rounded hover:text-red-500"
+                          style={{ color: 'var(--muted)' }}
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1425,7 +1449,7 @@ ${formData.governanceProfile?.description ?? ''}
                       </div>
 
                       {doc.ocrStatus === 'processing' && (
-                        <div className="bg-blue-50 rounded p-2 flex items-center gap-2 text-sm text-blue-700">
+                        <div className="bg-blue-50 dark:bg-blue-900/30 rounded p-2 flex items-center gap-2 text-sm text-blue-700 dark:text-blue-400">
                           <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1435,18 +1459,18 @@ ${formData.governanceProfile?.description ?? ''}
                       )}
 
                       {doc.ocrStatus === 'complete' && doc.detectedType && (
-                        <div className="bg-indigo-50 rounded p-2 flex items-center justify-between text-sm">
+                        <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded p-2 flex items-center justify-between text-sm">
                           <div className="flex items-center gap-2">
-                            <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
-                            <span className="text-indigo-700 font-medium">{doc.detectedType.replace(/_/g, ' ')}</span>
+                            <span className="text-indigo-700 dark:text-indigo-400 font-medium">{doc.detectedType.replace(/_/g, ' ')}</span>
                           </div>
                           {doc.detectedConfidence !== undefined && (
                             <span className={`text-xs px-2 py-0.5 rounded-full ${
-                              doc.detectedConfidence >= 0.8 ? 'bg-green-100 text-green-700' :
-                              doc.detectedConfidence >= 0.6 ? 'bg-amber-100 text-amber-700' :
-                              'bg-red-100 text-red-700'
+                              doc.detectedConfidence >= 0.8 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400' :
+                              doc.detectedConfidence >= 0.6 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400' :
+                              'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400'
                             }`}>
                               {Math.round(doc.detectedConfidence * 100)}%
                             </span>
@@ -1455,7 +1479,7 @@ ${formData.governanceProfile?.description ?? ''}
                       )}
 
                       {doc.aiReview && doc.ocrStatus === 'complete' && (
-                        <div className="bg-emerald-50 rounded p-2 mt-2 text-sm text-emerald-800">
+                        <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded p-2 mt-2 text-sm text-emerald-800 dark:text-emerald-300">
                           {doc.aiReview}
                         </div>
                       )}
@@ -1465,7 +1489,7 @@ ${formData.governanceProfile?.description ?? ''}
               )}
 
               {formData.documents.length === 0 && (
-                <p className="text-center text-gray-500 text-sm py-4">
+                <p className="text-center text-sm py-4" style={{ color: 'var(--muted)' }}>
                   {isRtl ? 'لم يتم تحميل أي مستندات بعد' : 'No documents uploaded yet'}
                 </p>
               )}
@@ -1474,14 +1498,15 @@ ${formData.governanceProfile?.description ?? ''}
                 <button
                   type="button"
                   onClick={() => setOpenSection('esg')}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                  className="px-6 py-2 rounded-lg font-medium transition-colors"
+                  style={{ background: 'var(--panel-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
                 >
                   {t.common.back}
                 </button>
                 <button
                   type="button"
                   onClick={() => setOpenSection('review')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                 >
                   {isRtl ? 'التالي: المراجعة' : 'Next: Review'}
                   <svg className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1494,7 +1519,7 @@ ${formData.governanceProfile?.description ?? ''}
         </div>
 
         {/* Section 4: Review & Submit */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm" style={{ background: 'var(--panel)' }}>
           <AccordionHeader
             section="review"
             title={isRtl ? '4. مراجعة وإرسال' : '4. Review & Submit'}
@@ -1502,9 +1527,9 @@ ${formData.governanceProfile?.description ?? ''}
             isComplete={sectionStatus.review}
           />
           {openSection === 'review' && (
-            <div id="section-review" className="p-6 border-t border-gray-100" role="region" aria-labelledby="review-header">
+            <div id="section-review" className="p-6" style={{ borderTop: '1px solid var(--border)' }} role="region" aria-labelledby="review-header">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>
                   {isRtl ? 'راجع طلبك قبل الإرسال' : 'Review your application before submitting'}
                 </p>
                 <button
@@ -1523,12 +1548,12 @@ ${formData.governanceProfile?.description ?? ''}
               {/* Draft Report Modal */}
               {showDraftReportModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                  <div className="bg-white rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-                    <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-cyan-50 to-blue-50">
-                      <h3 className="font-semibold text-gray-900">
+                  <div className="rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col" style={{ background: 'var(--panel)' }}>
+                    <div className="p-4 flex items-center justify-between bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30" style={{ borderBottom: '1px solid var(--border)' }}>
+                      <h3 className="font-semibold" style={{ color: 'var(--text)' }}>
                         {isRtl ? 'معاينة تقرير ESG' : 'Draft ESG Report Preview'}
                       </h3>
-                      <button onClick={() => setShowDraftReportModal(false)} className="text-gray-500 hover:text-gray-700">
+                      <button onClick={() => setShowDraftReportModal(false)} style={{ color: 'var(--muted)' }} className="hover:opacity-80">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -1536,7 +1561,7 @@ ${formData.governanceProfile?.description ?? ''}
                     </div>
                     <div className="p-6 overflow-y-auto flex-1">
                       {loadingDraftReport ? (
-                        <div className="flex flex-col items-center justify-center py-12 text-cyan-600">
+                        <div className="flex flex-col items-center justify-center py-12 text-cyan-600 dark:text-cyan-400">
                           <svg className="w-12 h-12 animate-spin mb-4" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1544,13 +1569,13 @@ ${formData.governanceProfile?.description ?? ''}
                           <p>{isRtl ? 'جاري إنشاء التقرير...' : 'Generating report...'}</p>
                         </div>
                       ) : draftReport ? (
-                        <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700">{draftReport}</pre>
+                        <pre className="whitespace-pre-wrap font-sans text-sm" style={{ color: 'var(--text)' }}>{draftReport}</pre>
                       ) : (
-                        <p className="text-gray-500 text-center py-8">{isRtl ? 'فشل في إنشاء التقرير' : 'Failed to generate report'}</p>
+                        <p className="text-center py-8" style={{ color: 'var(--muted)' }}>{isRtl ? 'فشل في إنشاء التقرير' : 'Failed to generate report'}</p>
                       )}
                     </div>
-                    <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
-                      <button onClick={() => setShowDraftReportModal(false)} className="px-4 py-2 text-gray-700 bg-white border rounded-lg hover:bg-gray-50">
+                    <div className="p-4 flex justify-end gap-3" style={{ background: 'var(--panel-2)', borderTop: '1px solid var(--border)' }}>
+                      <button onClick={() => setShowDraftReportModal(false)} className="px-4 py-2 rounded-lg" style={{ background: 'var(--panel)', color: 'var(--text)', border: '1px solid var(--border)' }}>
                         {isRtl ? 'إغلاق' : 'Close'}
                       </button>
                     </div>
@@ -1559,60 +1584,60 @@ ${formData.governanceProfile?.description ?? ''}
               )}
 
               {/* Applicant Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm">{isRtl ? 'معلومات مقدم الطلب' : 'Applicant Information'}</h3>
+              <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--panel-2)' }}>
+                <h3 className="font-semibold mb-2 text-sm" style={{ color: 'var(--text)' }}>{isRtl ? 'معلومات مقدم الطلب' : 'Applicant Information'}</h3>
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                  <dt className="text-gray-500">{isRtl ? 'الاسم:' : 'Name:'}</dt>
-                  <dd className="text-gray-900">{formData.applicantName || '-'}</dd>
-                  <dt className="text-gray-500">{isRtl ? 'المؤسسة:' : 'Organization:'}</dt>
-                  <dd className="text-gray-900">{formData.organizationName || '-'}</dd>
-                  <dt className="text-gray-500">{isRtl ? 'البريد:' : 'Email:'}</dt>
-                  <dd className="text-gray-900">{formData.email || '-'}</dd>
-                  <dt className="text-gray-500">{isRtl ? 'القطاع:' : 'Sector:'}</dt>
-                  <dd className="text-gray-900">{formData.sector || '-'}</dd>
+                  <dt style={{ color: 'var(--muted)' }}>{isRtl ? 'الاسم:' : 'Name:'}</dt>
+                  <dd style={{ color: 'var(--text)' }}>{formData.applicantName || '-'}</dd>
+                  <dt style={{ color: 'var(--muted)' }}>{isRtl ? 'المؤسسة:' : 'Organization:'}</dt>
+                  <dd style={{ color: 'var(--text)' }}>{formData.organizationName || '-'}</dd>
+                  <dt style={{ color: 'var(--muted)' }}>{isRtl ? 'البريد:' : 'Email:'}</dt>
+                  <dd style={{ color: 'var(--text)' }}>{formData.email || '-'}</dd>
+                  <dt style={{ color: 'var(--muted)' }}>{isRtl ? 'القطاع:' : 'Sector:'}</dt>
+                  <dd style={{ color: 'var(--text)' }}>{formData.sector || '-'}</dd>
                 </dl>
               </div>
 
               {/* ESG Summary */}
               <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="bg-green-50 rounded-lg p-3">
-                  <h4 className="font-medium text-green-800 text-sm mb-1">🌿 {isRtl ? 'البيئة' : 'Environmental'}</h4>
-                  <p className="text-xs text-gray-700 line-clamp-2">{formData.environmentalProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-100 dark:border-green-800">
+                  <h4 className="font-medium text-green-800 dark:text-green-400 text-sm mb-1">🌿 {isRtl ? 'البيئة' : 'Environmental'}</h4>
+                  <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{formData.environmentalProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <h4 className="font-medium text-blue-800 text-sm mb-1">👥 {isRtl ? 'اجتماعي' : 'Social'}</h4>
-                  <p className="text-xs text-gray-700 line-clamp-2">{formData.socialProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800">
+                  <h4 className="font-medium text-blue-800 dark:text-blue-400 text-sm mb-1">👥 {isRtl ? 'اجتماعي' : 'Social'}</h4>
+                  <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{formData.socialProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
-                  <h4 className="font-medium text-purple-800 text-sm mb-1">⚖️ {isRtl ? 'حوكمة' : 'Governance'}</h4>
-                  <p className="text-xs text-gray-700 line-clamp-2">{formData.governanceProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
+                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 border border-purple-100 dark:border-purple-800">
+                  <h4 className="font-medium text-purple-800 dark:text-purple-400 text-sm mb-1">⚖️ {isRtl ? 'حوكمة' : 'Governance'}</h4>
+                  <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{formData.governanceProfile.description || (isRtl ? 'لم يتم التحديد' : 'Not specified')}</p>
                 </div>
               </div>
 
               {/* Documents Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm">
+              <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--panel-2)' }}>
+                <h3 className="font-semibold mb-2 text-sm" style={{ color: 'var(--text)' }}>
                   {isRtl ? 'المستندات المرفقة' : 'Attached Documents'} ({formData.documents.length})
                 </h3>
                 {formData.documents.length > 0 ? (
                   <ul className="space-y-1">
                     {formData.documents.map((doc, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-sm">
+                      <li key={idx} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text)' }}>
                         <span>📄</span>
                         <span>{doc.fileName}</span>
-                        <span className="text-gray-400 text-xs">({doc.type?.replace('_', ' ')})</span>
+                        <span className="text-xs" style={{ color: 'var(--muted)' }}>({doc.type?.replace('_', ' ')})</span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-500">{isRtl ? 'لا توجد مستندات مرفقة' : 'No documents attached'}</p>
+                  <p className="text-sm" style={{ color: 'var(--muted)' }}>{isRtl ? 'لا توجد مستندات مرفقة' : 'No documents attached'}</p>
                 )}
               </div>
 
               {/* AI Completeness Check */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200 mb-4">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800 mb-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-blue-900 text-sm flex items-center gap-2">
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-400 text-sm flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -1629,7 +1654,7 @@ ${formData.governanceProfile?.description ?? ''}
                 </div>
 
                 {completenessCheck && (
-                  <div className="space-y-3 pt-3 border-t border-blue-200">
+                  <div className="space-y-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
                     <div className="flex items-center gap-3">
                       <div className={`text-2xl font-bold ${
                         completenessCheck.overallScore >= 80 ? 'text-green-600' :
@@ -1638,7 +1663,7 @@ ${formData.governanceProfile?.description ?? ''}
                         {completenessCheck.overallScore}%
                       </div>
                       <div className="flex-1">
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--panel-2)' }}>
                           <div
                             className={`h-full transition-all ${
                               completenessCheck.overallScore >= 80 ? 'bg-green-500' :
@@ -1652,10 +1677,10 @@ ${formData.governanceProfile?.description ?? ''}
 
                     {completenessCheck.strengths.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-medium text-green-700 mb-1">✅ {isRtl ? 'نقاط القوة:' : 'Strengths:'}</h4>
+                        <h4 className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">✅ {isRtl ? 'نقاط القوة:' : 'Strengths:'}</h4>
                         <ul className="space-y-0.5">
                           {completenessCheck.strengths.map((s, i) => (
-                            <li key={i} className="text-xs text-gray-700">• {s}</li>
+                            <li key={i} className="text-xs" style={{ color: 'var(--text-secondary)' }}>• {s}</li>
                           ))}
                         </ul>
                       </div>
@@ -1663,10 +1688,10 @@ ${formData.governanceProfile?.description ?? ''}
 
                     {completenessCheck.weaknesses.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-medium text-amber-700 mb-1">⚠️ {isRtl ? 'نقاط الضعف:' : 'Weaknesses:'}</h4>
+                        <h4 className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-1">⚠️ {isRtl ? 'نقاط الضعف:' : 'Weaknesses:'}</h4>
                         <ul className="space-y-0.5">
                           {completenessCheck.weaknesses.map((w, i) => (
-                            <li key={i} className="text-xs text-gray-700">• {w}</li>
+                            <li key={i} className="text-xs" style={{ color: 'var(--text-secondary)' }}>• {w}</li>
                           ))}
                         </ul>
                       </div>
@@ -1676,7 +1701,7 @@ ${formData.governanceProfile?.description ?? ''}
               </div>
 
               {errors.submit && (
-                <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-sm">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg p-3 mb-4 text-sm">
                   {errors.submit}
                 </div>
               )}
@@ -1685,14 +1710,15 @@ ${formData.governanceProfile?.description ?? ''}
                 <button
                   type="button"
                   onClick={() => setOpenSection('documents')}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                  className="px-6 py-2 rounded-lg font-medium transition-colors"
+                  style={{ background: 'var(--panel-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
                 >
                   {t.common.back}
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="px-8 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-8 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {isSubmitting && (
                     <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

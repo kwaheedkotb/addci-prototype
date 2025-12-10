@@ -218,7 +218,7 @@ export default function StaffApplicationDetail() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--primary)' }}></div>
       </div>
     )
   }
@@ -226,7 +226,7 @@ export default function StaffApplicationDetail() {
   if (!application) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 text-center">
-        <p className="text-gray-500">Application not found</p>
+        <p style={{ color: 'var(--muted)' }}>Application not found</p>
       </div>
     )
   }
@@ -238,7 +238,8 @@ export default function StaffApplicationDetail() {
       <div className="mb-6">
         <Link
           href="/staff"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center hover:opacity-80"
+          style={{ color: 'var(--muted)' }}
         >
           <svg className="w-5 h-5 me-2 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -251,11 +252,11 @@ export default function StaffApplicationDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Application Info Card */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b bg-gray-50 flex justify-between items-center">
+          <div className="shadow rounded-lg overflow-hidden theme-panel">
+            <div className="px-6 py-4 flex justify-between items-center" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">{t.staff.detail.title}</h1>
-                <p className="text-sm text-gray-500">ID: {application.id}</p>
+                <h1 className="text-xl font-bold" style={{ color: 'var(--text)' }}>{t.staff.detail.title}</h1>
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>ID: {application.id}</p>
               </div>
               <StatusBadge status={application.status} />
             </div>
@@ -274,31 +275,31 @@ export default function StaffApplicationDetail() {
             )}
 
             <div className="px-6 py-6 space-y-6">
-              <h2 className="text-lg font-semibold text-gray-900">{t.staff.detail.applicationInfo}</h2>
+              <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>{t.staff.detail.applicationInfo}</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-xs font-medium text-gray-500 uppercase">{t.customer.form.applicantName}</label>
-                  <p className="mt-1 text-gray-900 font-medium">{application.applicantName}</p>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                  <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>{t.customer.form.applicantName}</label>
+                  <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{application.applicantName}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-xs font-medium text-gray-500 uppercase">{t.customer.form.organizationName}</label>
-                  <p className="mt-1 text-gray-900 font-medium">{application.organizationName}</p>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                  <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>{t.customer.form.organizationName}</label>
+                  <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{application.organizationName}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-xs font-medium text-gray-500 uppercase">{t.customer.form.email}</label>
-                  <p className="mt-1 text-gray-900">{application.email}</p>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                  <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>{t.customer.form.email}</label>
+                  <p className="mt-1" style={{ color: 'var(--text)' }}>{application.email}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-xs font-medium text-gray-500 uppercase">{t.customer.form.sector}</label>
-                  <p className="mt-1 text-gray-900">{application.sector}</p>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                  <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>{t.customer.form.sector}</label>
+                  <p className="mt-1" style={{ color: 'var(--text)' }}>{application.sector}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 uppercase mb-2">{t.customer.form.description}</label>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700 whitespace-pre-wrap">{application.description}</p>
+                <label className="block text-xs font-medium uppercase mb-2" style={{ color: 'var(--muted)' }}>{t.customer.form.description}</label>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                  <p className="whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>{application.description}</p>
                 </div>
               </div>
 
@@ -309,13 +310,13 @@ export default function StaffApplicationDetail() {
           </div>
 
           {/* Review Notes */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b bg-gray-50">
-              <h2 className="text-lg font-semibold text-gray-900">{t.staff.detail.reviewNotes}</h2>
+          <div className="shadow rounded-lg overflow-hidden theme-panel">
+            <div className="px-6 py-4" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
+              <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>{t.staff.detail.reviewNotes}</h2>
             </div>
             <div className="px-6 py-4">
               {application.reviewNotes.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">{t.customer.detail.noNotes}</p>
+                <p className="text-center py-4" style={{ color: 'var(--muted)' }}>{t.customer.detail.noNotes}</p>
               ) : (
                 <div className="space-y-4">
                   {application.reviewNotes.map((note) => (
@@ -323,37 +324,38 @@ export default function StaffApplicationDetail() {
                       key={note.id}
                       className={`p-4 rounded-lg border ${
                         note.authorType === 'SYSTEM'
-                          ? 'bg-gray-50 border-gray-200'
-                          : 'bg-blue-50 border-blue-200'
+                          ? 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+                          : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className={`text-xs font-medium px-2 py-1 rounded ${
                           note.authorType === 'SYSTEM'
-                            ? 'bg-gray-200 text-gray-700'
-                            : 'bg-blue-200 text-blue-700'
+                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                            : 'bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300'
                         }`}>
                           {note.authorType}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs" style={{ color: 'var(--muted)' }}>
                           {new Date(note.createdAt).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-gray-700 whitespace-pre-wrap">{note.note}</p>
+                      <p className="whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>{note.note}</p>
                     </div>
                   ))}
                 </div>
               )}
 
               {/* Add Note */}
-              <div className="mt-6 pt-6 border-t">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">{t.staff.detail.addNote}</h3>
+              <div className="mt-6 pt-6" style={{ borderTop: '1px solid var(--border)' }}>
+                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{t.staff.detail.addNote}</h3>
                 <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
                   placeholder={t.staff.detail.notePlaceholder}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ background: 'var(--panel-2)', border: '1px solid var(--border)', color: 'var(--text)' }}
                 />
                 <div className="mt-2 flex justify-end">
                   <button
@@ -372,9 +374,9 @@ export default function StaffApplicationDetail() {
         {/* Sidebar - AI Tools & Actions */}
         <div className="space-y-6">
           {/* AI Reviewer Assist - Advanced Analysis */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b bg-gradient-to-r from-emerald-50 to-teal-50">
-              <h2 className="text-lg font-semibold text-emerald-900 flex items-center gap-2">
+          <div className="shadow rounded-lg overflow-hidden theme-panel">
+            <div className="px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30" style={{ borderBottom: '1px solid var(--border)' }}>
+              <h2 className="text-lg font-semibold text-emerald-900 dark:text-emerald-300 flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
@@ -512,9 +514,9 @@ export default function StaffApplicationDetail() {
           </div>
 
           {/* AI Tools */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b bg-purple-50">
-              <h2 className="text-lg font-semibold text-purple-900 flex items-center gap-2">
+          <div className="shadow rounded-lg overflow-hidden theme-panel">
+            <div className="px-6 py-4 bg-purple-50 dark:bg-purple-900/30" style={{ borderBottom: '1px solid var(--border)' }}>
+              <h2 className="text-lg font-semibold text-purple-900 dark:text-purple-300 flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
@@ -526,7 +528,7 @@ export default function StaffApplicationDetail() {
                 <button
                   onClick={runAiSummary}
                   disabled={aiSummaryLoading}
-                  className="w-full px-4 py-3 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-start"
+                  className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors disabled:opacity-50 text-start"
                 >
                   <div className="font-medium flex items-center gap-2">
                     {aiSummaryLoading && (
@@ -537,7 +539,7 @@ export default function StaffApplicationDetail() {
                     )}
                     {t.staff.detail.runAiSummary}
                   </div>
-                  <p className="text-sm text-purple-600 mt-1">{t.staff.detail.runAiSummaryDesc}</p>
+                  <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">{t.staff.detail.runAiSummaryDesc}</p>
                 </button>
               </div>
 
@@ -545,7 +547,7 @@ export default function StaffApplicationDetail() {
                 <button
                   onClick={() => generateAiComment('corrections')}
                   disabled={aiCommentLoading}
-                  className="w-full px-4 py-3 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-start"
+                  className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors disabled:opacity-50 text-start"
                 >
                   <div className="font-medium flex items-center gap-2">
                     {aiCommentLoading && (
@@ -556,7 +558,7 @@ export default function StaffApplicationDetail() {
                     )}
                     {t.staff.detail.generateAiComment}
                   </div>
-                  <p className="text-sm text-purple-600 mt-1">{t.staff.detail.generateAiCommentDesc}</p>
+                  <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">{t.staff.detail.generateAiCommentDesc}</p>
                 </button>
               </div>
 
@@ -573,15 +575,15 @@ export default function StaffApplicationDetail() {
 
           {/* Status Actions */}
           {canTakeAction && (
-            <div className="bg-white shadow rounded-lg overflow-hidden">
-              <div className="px-6 py-4 border-b bg-gray-50">
-                <h2 className="text-lg font-semibold text-gray-900">{t.staff.detail.statusActions}</h2>
+            <div className="shadow rounded-lg overflow-hidden theme-panel">
+              <div className="px-6 py-4" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
+                <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>{t.staff.detail.statusActions}</h2>
               </div>
               <div className="p-6 space-y-3">
                 <button
                   onClick={() => updateStatus('CORRECTIONS_REQUESTED')}
                   disabled={actionLoading !== null}
-                  className="w-full px-4 py-3 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors disabled:opacity-50 font-medium"
+                  className="w-full px-4 py-3 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-800/30 transition-colors disabled:opacity-50 font-medium"
                 >
                   {actionLoading === 'CORRECTIONS_REQUESTED' ? t.common.loading : t.staff.detail.requestCorrections}
                 </button>
@@ -589,7 +591,7 @@ export default function StaffApplicationDetail() {
                 <button
                   onClick={() => updateStatus('APPROVED')}
                   disabled={actionLoading !== null}
-                  className="w-full px-4 py-3 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors disabled:opacity-50 font-medium"
+                  className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-800/30 transition-colors disabled:opacity-50 font-medium"
                 >
                   {actionLoading === 'APPROVED' ? t.common.loading : t.staff.detail.approveIssue}
                 </button>
@@ -597,7 +599,7 @@ export default function StaffApplicationDetail() {
                 <button
                   onClick={() => updateStatus('REJECTED')}
                   disabled={actionLoading !== null}
-                  className="w-full px-4 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 font-medium"
+                  className="w-full px-4 py-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/30 transition-colors disabled:opacity-50 font-medium"
                 >
                   {actionLoading === 'REJECTED' ? t.common.loading : t.staff.detail.reject}
                 </button>

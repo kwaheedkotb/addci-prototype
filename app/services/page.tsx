@@ -66,13 +66,13 @@ export default function ServicesPage() {
   const getPlatformColor = (platform: string) => {
     switch (platform) {
       case 'ADC Platform':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
+        return 'bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/30'
       case 'TAMM':
-        return 'bg-purple-100 text-purple-800 border-purple-200'
+        return 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-500/30'
       case 'Affiliates Platform':
-        return 'bg-amber-100 text-amber-800 border-amber-200'
+        return 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-white/10'
     }
   }
 
@@ -100,9 +100,9 @@ export default function ServicesPage() {
   const hasActiveFilters = searchQuery || selectedPlatform || selectedDepartment
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-[#0a2540] dark:to-[#0d3055] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <Link
             href="/"
@@ -126,11 +126,11 @@ export default function ServicesPage() {
 
       {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="rounded-2xl shadow-lg p-6 mb-8 theme-panel">
           <div className="grid md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                 {locale === 'ar' ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
@@ -139,11 +139,12 @@ export default function ServicesPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={locale === 'ar' ? 'ابحث عن خدمة...' : 'Search for a service...'}
-                  className="w-full px-4 py-2.5 ps-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 ps-10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   dir={locale === 'ar' ? 'rtl' : 'ltr'}
                 />
                 <svg
-                  className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                  className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5"
+                  style={{ color: 'var(--muted)' }}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -155,13 +156,13 @@ export default function ServicesPage() {
 
             {/* Platform Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                 {locale === 'ar' ? 'المنصة' : 'Platform'}
               </label>
               <select
                 value={selectedPlatform}
                 onChange={(e) => setSelectedPlatform(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
               >
                 <option value="">{locale === 'ar' ? 'جميع المنصات' : 'All Platforms'}</option>
                 {filters.platforms.map((platform) => (
@@ -174,13 +175,13 @@ export default function ServicesPage() {
 
             {/* Department Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                 {locale === 'ar' ? 'القسم' : 'Department'}
               </label>
               <select
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
               >
                 <option value="">{locale === 'ar' ? 'جميع الأقسام' : 'All Departments'}</option>
                 {filters.departments.map((dept) => (
@@ -194,10 +195,11 @@ export default function ServicesPage() {
 
           {/* Clear Filters */}
           {hasActiveFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
               <button
                 onClick={clearFilters}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="text-sm font-medium"
+                style={{ color: 'var(--primary)' }}
               >
                 {locale === 'ar' ? 'مسح جميع الفلاتر' : 'Clear all filters'}
               </button>
@@ -207,7 +209,7 @@ export default function ServicesPage() {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p style={{ color: 'var(--muted)' }}>
             {locale === 'ar'
               ? `عرض ${services.length} خدمة`
               : `Showing ${services.length} service${services.length !== 1 ? 's' : ''}`}
@@ -217,7 +219,7 @@ export default function ServicesPage() {
         {/* Services Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <svg className="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-8 w-8" style={{ color: 'var(--primary)' }} fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
@@ -228,26 +230,26 @@ export default function ServicesPage() {
               <button
                 key={service.id}
                 onClick={() => handleServiceClick(service)}
-                className="text-start bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border border-gray-100 group"
+                className="text-start rounded-2xl transition-all p-6 group theme-panel hover:shadow-lg"
               >
                 <div className="flex items-start justify-between mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPlatformColor(service.platform)}`}>
                     {service.platform}
                   </span>
-                  <span className="text-gray-400 group-hover:text-blue-600 transition-colors">
+                  <span className="transition-colors" style={{ color: 'var(--muted)' }}>
                     {getChannelIcon(service.channelType)}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-lg font-semibold mb-2 transition-colors" style={{ color: 'var(--text)' }}>
                   {locale === 'ar' ? service.nameAr : service.name}
                 </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                <p className="text-sm mb-4 line-clamp-2" style={{ color: 'var(--muted)' }}>
                   {locale === 'ar' ? service.descriptionAr : service.description}
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">{service.dept}</span>
+                  <span className="text-xs" style={{ color: 'var(--muted)' }}>{service.dept}</span>
                   {service.channelType === 'EXTERNAL' && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs" style={{ color: 'var(--muted)' }}>
                       {locale === 'ar' ? 'رابط خارجي' : 'External link'}
                     </span>
                   )}
@@ -256,11 +258,11 @@ export default function ServicesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-2xl">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="text-center py-12 rounded-2xl theme-panel">
+            <svg className="mx-auto h-12 w-12" style={{ color: 'var(--muted)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="mt-4 text-gray-600">
+            <p className="mt-4" style={{ color: 'var(--muted)' }}>
               {locale === 'ar' ? 'لم يتم العثور على خدمات. جرب فلاتر مختلفة.' : 'No services found. Try different filters.'}
             </p>
           </div>

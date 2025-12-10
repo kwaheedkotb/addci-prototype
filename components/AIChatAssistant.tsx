@@ -40,6 +40,23 @@ export default function AIChatAssistant() {
     scrollToBottom()
   }, [messages])
 
+  // State to hold a pending message from external trigger (e.g., ESG detail page)
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null)
+
+  // Listen for openChatbot events (from ESG service detail page)
+  useEffect(() => {
+    const handleOpenChatbot = (event: CustomEvent<{ message: string }>) => {
+      const { message } = event.detail
+      setIsOpen(true)
+      setPendingMessage(message)
+    }
+
+    window.addEventListener('openChatbot', handleOpenChatbot as EventListener)
+    return () => {
+      window.removeEventListener('openChatbot', handleOpenChatbot as EventListener)
+    }
+  }, [])
+
   // Listen for ESG Hints events
   useEffect(() => {
     const handleESGHints = (event: ESGHintsEvent) => {
@@ -156,6 +173,73 @@ export default function AIChatAssistant() {
     }
   }, [isOpen, messages.length, isRtl])
 
+  // Direct send function that takes message as parameter (for external triggers)
+  const sendMessageDirect = async (messageToSend: string) => {
+    if (!messageToSend.trim() || isLoading) return
+
+    setMessages(prev => [...prev, { role: 'user', content: messageToSend }])
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: messageToSend,
+          conversationHistory: messages,
+          locale,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data.response,
+          suggestedActions: data.suggestedActions,
+        }])
+      } else {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: isRtl ? 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.' : 'Sorry, an error occurred. Please try again.',
+        }])
+      }
+    } catch {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: isRtl ? 'عذراً، حدث خطأ في الاتصال.' : 'Sorry, a connection error occurred.',
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Process pending message when chat opens (must be after sendMessageDirect is defined)
+  useEffect(() => {
+    if (isOpen && pendingMessage && !isLoading) {
+      const msgToSend = pendingMessage
+      setPendingMessage(null)
+
+      // Add welcome message first if needed, then send the pending message
+      if (messages.length === 0) {
+        setMessages([{
+          role: 'assistant',
+          content: isRtl
+            ? 'مرحباً! 👋 أنا مساعدك الذكي من غرفة أبوظبي. كيف يمكنني مساعدتك اليوم؟'
+            : 'Hello! 👋 I\'m your AI assistant from Abu Dhabi Chamber. How can I help you today?',
+        }])
+        // Small delay to allow welcome message to render
+        setTimeout(() => {
+          sendMessageDirect(msgToSend)
+        }, 100)
+      } else {
+        sendMessageDirect(msgToSend)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, pendingMessage, isLoading, messages.length, isRtl])
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return
 
@@ -249,11 +333,12 @@ export default function AIChatAssistant() {
       {/* Chat Window */}
       {isOpen && (
         <div
-          className={`fixed bottom-24 ${isRtl ? 'left-6' : 'right-6'} z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl border overflow-hidden`}
+          className={`fixed bottom-24 ${isRtl ? 'left-6' : 'right-6'} z-50 w-96 max-w-[calc(100vw-3rem)] rounded-2xl shadow-2xl overflow-hidden`}
+          style={{ background: 'var(--panel)', border: '1px solid var(--border)' }}
           dir={isRtl ? 'rtl' : 'ltr'}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-[#0a2540] dark:to-[#0d3055] text-white p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -268,7 +353,7 @@ export default function AIChatAssistant() {
           </div>
 
           {/* Messages */}
-          <div className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="h-80 overflow-y-auto p-4 space-y-4" style={{ background: 'var(--bg-2)' }}>
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -278,8 +363,9 @@ export default function AIChatAssistant() {
                   className={`max-w-[85%] rounded-2xl px-4 py-2 ${
                     message.role === 'user'
                       ? 'bg-blue-600 text-white rounded-br-sm'
-                      : 'bg-white border shadow-sm rounded-bl-sm'
+                      : 'rounded-bl-sm'
                   }`}
+                  style={message.role === 'assistant' ? { background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--text)' } : {}}
                 >
                   <p className="text-sm whitespace-pre-wrap">{renderContent(message.content)}</p>
 
@@ -294,7 +380,8 @@ export default function AIChatAssistant() {
                               setInput(action.label)
                               setTimeout(() => sendMessage(), 100)
                             }}
-                            className="block w-full text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors text-center"
+                            className="block w-full text-xs px-3 py-2 rounded-lg transition-colors text-center"
+                            style={{ background: 'var(--chip-submitted-bg)', color: 'var(--chip-submitted-text)' }}
                           >
                             {action.label} →
                           </button>
@@ -303,7 +390,8 @@ export default function AIChatAssistant() {
                             key={idx}
                             href={action.action}
                             onClick={() => setIsOpen(false)}
-                            className="block text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors text-center"
+                            className="block text-xs px-3 py-2 rounded-lg transition-colors text-center"
+                            style={{ background: 'var(--chip-submitted-bg)', color: 'var(--chip-submitted-text)' }}
                           >
                             {action.label} →
                           </Link>
@@ -317,11 +405,11 @@ export default function AIChatAssistant() {
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border shadow-sm rounded-2xl rounded-bl-sm px-4 py-3">
+                <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: 'var(--panel)', border: '1px solid var(--border)' }}>
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--muted)', animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--muted)', animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--muted)', animationDelay: '300ms' }}></span>
                   </div>
                 </div>
               </div>
@@ -332,8 +420,8 @@ export default function AIChatAssistant() {
 
           {/* Quick Actions */}
           {messages.length <= 1 && (
-            <div className="px-4 py-2 border-t bg-white">
-              <p className="text-xs text-gray-500 mb-2">{isRtl ? 'أسئلة سريعة:' : 'Quick questions:'}</p>
+            <div className="px-4 py-2" style={{ background: 'var(--panel)', borderTop: '1px solid var(--border)' }}>
+              <p className="text-xs mb-2" style={{ color: 'var(--muted)' }}>{isRtl ? 'أسئلة سريعة:' : 'Quick questions:'}</p>
               <div className="flex flex-wrap gap-2">
                 {quickActions.map((action, idx) => (
                   <button
@@ -342,7 +430,8 @@ export default function AIChatAssistant() {
                       setInput(action.query)
                       setTimeout(() => sendMessage(), 100)
                     }}
-                    className="text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                    className="text-xs px-3 py-1.5 rounded-full transition-colors"
+                    style={{ background: 'var(--panel-2)', color: 'var(--text-secondary)' }}
                   >
                     {action.label}
                   </button>
@@ -352,7 +441,7 @@ export default function AIChatAssistant() {
           )}
 
           {/* Input */}
-          <div className="p-4 border-t bg-white">
+          <div className="p-4" style={{ background: 'var(--panel)', borderTop: '1px solid var(--border)' }}>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -360,7 +449,7 @@ export default function AIChatAssistant() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={isRtl ? 'اكتب رسالتك...' : 'Type your message...'}
-                className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="flex-1 px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 disabled={isLoading}
               />
               <button

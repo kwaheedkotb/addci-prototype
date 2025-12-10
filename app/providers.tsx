@@ -1,6 +1,7 @@
 'use client'
 
 import { I18nProvider, useI18n } from '@/lib/i18n'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import Header from '@/components/Header'
 import AIChatAssistant from '@/components/AIChatAssistant'
 import { ReactNode } from 'react'
@@ -12,7 +13,8 @@ function AppContent({ children }: { children: ReactNode }) {
   const isLandingPage = pathname === '/'
 
   return (
-    <div dir={dir} className="min-h-screen bg-gray-50">
+    // Use CSS variable for background, adapts to dark/light mode
+    <div dir={dir} className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <Header />
       <main>{children}</main>
       {!isLandingPage && <AIChatAssistant />}
@@ -22,8 +24,10 @@ function AppContent({ children }: { children: ReactNode }) {
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <I18nProvider>
-      <AppContent>{children}</AppContent>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <AppContent>{children}</AppContent>
+      </I18nProvider>
+    </ThemeProvider>
   )
 }

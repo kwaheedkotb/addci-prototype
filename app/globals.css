@@ -1,24 +1,124 @@
 @import "tailwindcss";
 
+/* Tailwind v4: Enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================
+   THEME TOKENS
+   - Light mode: default (:root)
+   - Dark mode: .dark class
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode tokens */
+  --bg: #ffffff;
+  --bg-2: #f8fafc;
+  --panel: #ffffff;
+  --panel-2: #f1f5f9;
+  --muted: #6b7280;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent-green: #16a34a;
+  --accent-red: #dc2626;
+  --accent-amber: #d97706;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.15);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Status chip colors - light */
+  --chip-approved-bg: #dcfce7;
+  --chip-approved-text: #166534;
+  --chip-submitted-bg: #dbeafe;
+  --chip-submitted-text: #1e40af;
+  --chip-rejected-bg: #fee2e2;
+  --chip-rejected-text: #991b1b;
+  --chip-warning-bg: #fef3c7;
+  --chip-warning-text: #92400e;
+  --chip-review-bg: #e0e7ff;
+  --chip-review-text: #3730a3;
+
+  /* Input colors */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus: #2563eb;
+
+  /* Scrollbar */
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a1a1a1;
 }
 
+.dark {
+  /* Dark mode tokens - deep navy palette matching landing page */
+  --bg: #001620;
+  --bg-2: #001b2a;
+  --panel: #071824;
+  --panel-2: #0a2236;
+  --muted: #9fb0bd;
+  --text: #ffffff;
+  --text-secondary: #cbd5e1;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-amber: #f59e0b;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.6);
+
+  /* Status chip colors - dark */
+  --chip-approved-bg: rgba(34, 197, 94, 0.15);
+  --chip-approved-text: #4ade80;
+  --chip-submitted-bg: rgba(59, 130, 246, 0.15);
+  --chip-submitted-text: #60a5fa;
+  --chip-rejected-bg: rgba(239, 68, 68, 0.15);
+  --chip-rejected-text: #f87171;
+  --chip-warning-bg: rgba(245, 158, 11, 0.15);
+  --chip-warning-text: #fbbf24;
+  --chip-review-bg: rgba(99, 102, 241, 0.15);
+  --chip-review-text: #a5b4fc;
+
+  /* Input colors - dark */
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus: #3b82f6;
+
+  /* Scrollbar - dark */
+  --scrollbar-track: #0a2236;
+  --scrollbar-thumb: #1e3a5f;
+  --scrollbar-thumb-hover: #2d4a6f;
+}
+
+/* ============================================
+   TAILWIND THEME CONFIGURATION
+   ============================================ */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* RTL Support */
+/* ============================================
+   RTL SUPPORT
+   ============================================ */
+
 [dir="rtl"] {
   text-align: right;
 }
@@ -54,25 +154,57 @@ body {
   flex-direction: row-reverse;
 }
 
-/* Custom scrollbar */
+/* ============================================
+   SCROLLBAR STYLES
+   ============================================ */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scrollbar-track);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--scrollbar-thumb-hover);
 }
+
+/* ============================================
+   FORM INPUT STYLES
+   ============================================ */
+
+input,
+textarea,
+select {
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--input-focus);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
 
 /* Typewriter cursor blink animation */
 @keyframes blink {
@@ -86,4 +218,59 @@ body {
 
 .animate-blink {
   animation: blink 1s step-end infinite;
+}
+
+/* ============================================
+   UTILITY CLASSES FOR THEME
+   ============================================ */
+
+/* Panel/Card backgrounds */
+.theme-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.theme-panel-2 {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+}
+
+/* Text colors */
+.theme-text {
+  color: var(--text);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--muted);
+}
+
+/* Status chips */
+.chip-approved {
+  background: var(--chip-approved-bg);
+  color: var(--chip-approved-text);
+}
+
+.chip-submitted {
+  background: var(--chip-submitted-bg);
+  color: var(--chip-submitted-text);
+}
+
+.chip-rejected {
+  background: var(--chip-rejected-bg);
+  color: var(--chip-rejected-text);
+}
+
+.chip-warning {
+  background: var(--chip-warning-bg);
+  color: var(--chip-warning-text);
+}
+
+.chip-review {
+  background: var(--chip-review-bg);
+  color: var(--chip-review-text);
 }

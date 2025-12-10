@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useI18n } from '@/lib/i18n'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 interface Service {
   id: number
@@ -154,13 +155,13 @@ export default function Home() {
   const getPlatformColor = (platform: string) => {
     switch (platform) {
       case 'ADC Platform':
-        return 'bg-[#003057]/20 text-[#60A5FA]'
+        return 'bg-blue-100 text-blue-700 dark:bg-[#003057]/20 dark:text-[#60A5FA]'
       case 'TAMM':
-        return 'bg-purple-500/20 text-purple-300'
+        return 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300'
       case 'Affiliates Platform':
-        return 'bg-amber-500/20 text-amber-300'
+        return 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
       default:
-        return 'bg-white/10 text-white/70'
+        return 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-white/70'
     }
   }
 
@@ -187,7 +188,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b from-[#000C14] via-[#001520] to-[#001B30] ${isRtl ? 'rtl' : 'ltr'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 dark:from-[#000C14] dark:via-[#001520] dark:to-[#001B30] ${isRtl ? 'rtl' : 'ltr'}`} dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Side Menu Overlay */}
       {isMenuOpen && (
         <div
@@ -196,21 +197,21 @@ export default function Home() {
         />
       )}
 
-      {/* Dark Themed Slide-out Side Menu */}
-      <div className={`fixed top-0 ${isRtl ? 'right-0' : 'left-0'} h-full w-72 bg-gradient-to-b from-[#001520] to-[#001B30] shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+      {/* Slide-out Side Menu */}
+      <div className={`fixed top-0 ${isRtl ? 'right-0' : 'left-0'} h-full w-72 bg-white dark:bg-gradient-to-b dark:from-[#001520] dark:to-[#001B30] shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
         isMenuOpen
           ? 'translate-x-0'
           : isRtl ? 'translate-x-full' : '-translate-x-full'
       }`}>
         {/* Menu Header */}
-        <div className="p-6 border-b border-white/10">
+        <div className="p-6 border-b border-gray-200 dark:border-white/10">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {isRtl ? 'القائمة' : 'Menu'}
             </h2>
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-900 dark:text-white/60 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -225,10 +226,10 @@ export default function Home() {
             <li>
               <Link
                 href="/services"
-                className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-gray-400 dark:text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 <span className="text-sm font-medium">
@@ -239,10 +240,10 @@ export default function Home() {
             <li>
               <Link
                 href="/staff"
-                className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-gray-400 dark:text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
                 <span className="text-sm font-medium">
@@ -253,10 +254,10 @@ export default function Home() {
             <li>
               <Link
                 href="/customer"
-                className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-gray-400 dark:text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <span className="text-sm font-medium">
@@ -264,13 +265,13 @@ export default function Home() {
                 </span>
               </Link>
             </li>
-            <li className="pt-4 border-t border-white/10 mt-4">
+            <li className="pt-4 border-t border-gray-200 dark:border-white/10 mt-4">
               <Link
                 href="#"
-                className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-gray-400 dark:text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span className="text-sm font-medium">
@@ -280,12 +281,12 @@ export default function Home() {
             </li>
             <li>
               <button
-                className="w-full flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-colors"
                 onClick={() => {
                   setIsMenuOpen(false)
                 }}
               >
-                <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-gray-400 dark:text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
                 <span className="text-sm font-medium">
@@ -297,22 +298,22 @@ export default function Home() {
         </nav>
 
         {/* Menu Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10 bg-[#001520]/50">
-          <p className="text-xs text-white/40 text-center">
+        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#001520]/50">
+          <p className="text-xs text-gray-500 dark:text-white/40 text-center">
             {isRtl ? 'غرفة تجارة وصناعة أبوظبي' : 'Abu Dhabi Chamber of Commerce'}
           </p>
         </div>
       </div>
 
-      {/* Top Navigation Bar - Transparent */}
+      {/* Top Navigation Bar - Transparent, Compact */}
       <nav className="fixed top-0 left-0 right-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-2.5">
           <div className="flex items-center justify-between">
             {/* Left: Hamburger Menu */}
-            <div className={`flex items-center gap-4 ${isRtl ? 'order-2' : 'order-1'}`}>
+            <div className={`flex items-center ${isRtl ? 'order-2' : 'order-1'}`}>
               <button
                 onClick={() => setIsMenuOpen(true)}
-                className="p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200/50 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-lg transition-all"
                 aria-label={isRtl ? 'فتح القائمة' : 'Open menu'}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -321,42 +322,45 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Center: ADCCI Logo */}
-            <div className="flex items-center gap-3 order-2">
-              {/* ADCCI-style Logo Placeholder */}
-              <svg className="w-10 h-10" viewBox="0 0 48 48" fill="none">
-                <rect x="4" y="8" width="40" height="32" rx="4" stroke="white" strokeWidth="2" fill="none"/>
-                <path d="M12 20h24M12 28h24M12 36h16" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="36" cy="16" r="4" fill="white" fillOpacity="0.3" stroke="white" strokeWidth="1.5"/>
-                <path d="M24 8V4M20 6L24 4L28 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            {/* Center: ADCCI Logo - Increased size and stroke */}
+            <div className="flex items-center gap-2 order-2">
+              {/* ADCCI-style Logo - Slightly larger with thicker strokes */}
+              <svg className="w-11 h-11" viewBox="0 0 48 48" fill="none">
+                <rect x="4" y="8" width="40" height="32" rx="4" className="stroke-gray-800 dark:stroke-white" strokeWidth="2.5" fill="none"/>
+                <path d="M12 20h24M12 28h24M12 36h16" className="stroke-gray-800 dark:stroke-white" strokeWidth="2.5" strokeLinecap="round"/>
+                <circle cx="36" cy="16" r="4" className="fill-gray-800/30 stroke-gray-800 dark:fill-white/30 dark:stroke-white" strokeWidth="2"/>
+                <path d="M24 8V4M20 6L24 4L28 6" className="stroke-gray-800 dark:stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span className="text-white font-semibold text-lg tracking-wide hidden sm:block">
+              <span className="text-gray-900 dark:text-white font-semibold text-lg tracking-wide hidden sm:block">
                 {isRtl ? 'غرفة أبوظبي' : 'Abu Dhabi Chamber'}
               </span>
             </div>
 
-            {/* Right: Language Toggle */}
-            <div className={`flex items-center gap-2 ${isRtl ? 'order-1' : 'order-3'}`}>
-              <button
-                onClick={() => setLocale('en')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  locale === 'en'
-                    ? 'bg-white text-[#001B30]'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLocale('ar')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  locale === 'ar'
-                    ? 'bg-white text-[#001B30]'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                عربي
-              </button>
+            {/* Right: Theme Toggle + Language Toggle - Capsule style */}
+            <div className={`flex items-center gap-2 ${isRtl ? 'order-1 ml-2' : 'order-3 mr-2'}`}>
+              <ThemeToggle />
+              <div className="flex items-center bg-gray-200 dark:bg-white/10 rounded-full p-0.5">
+                <button
+                  onClick={() => setLocale('en')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
+                    locale === 'en'
+                      ? 'bg-white dark:bg-white text-gray-900 dark:text-[#001B30] shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white'
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => setLocale('ar')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
+                    locale === 'ar'
+                      ? 'bg-white dark:bg-white text-gray-900 dark:text-[#001B30] shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white'
+                  }`}
+                >
+                  AR
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -364,18 +368,18 @@ export default function Home() {
 
       {/* Main Content */}
       {!hasSearched ? (
-        /* Hero Section - Centered vertically and horizontally */
-        <div className="min-h-screen flex items-center justify-center px-6">
+        /* Hero Section - Compressed spacing, moved upward */
+        <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 -mt-16">
           <div className="w-full max-w-2xl text-center">
-            {/* Primary Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            {/* Primary Headline - Tighter line height */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3 leading-[1.15]">
               {isRtl
                 ? 'كيف يمكننا مساعدة عملك اليوم؟'
                 : 'How can we help your business today?'}
             </h1>
 
-            {/* Sub-headline */}
-            <p className="text-base sm:text-lg text-white/60 mb-12 max-w-xl mx-auto font-light">
+            {/* Sub-headline - Reduced margin */}
+            <p className="text-base sm:text-lg text-gray-600 dark:text-white/60 mb-8 max-w-xl mx-auto font-light">
               {isRtl
                 ? 'اكتب أي طلب باللغة العربية أو الإنجليزية وسيجد الذكاء الاصطناعي الخدمة المناسبة فوراً.'
                 : 'Type any request in English or Arabic. Our AI will find the right service instantly.'}
@@ -383,31 +387,40 @@ export default function Home() {
 
             {/* Search Card */}
             <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto">
-              <div className="bg-white rounded-2xl shadow-2xl shadow-black/20 overflow-hidden ring-1 ring-white/20 focus-within:ring-2 focus-within:ring-[#3B82F6] transition-all">
-                {/* Input Area */}
-                <div className="relative px-6 py-5">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder=""
-                      className="w-full text-lg bg-transparent border-none focus:outline-none focus:ring-0 text-gray-800 placeholder-gray-400"
-                      dir={isRtl ? 'rtl' : 'ltr'}
-                    />
-                    {/* Typewriter Placeholder Overlay */}
-                    {!query && (
-                      <div
-                        className={`absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-0' : 'left-0'} pointer-events-none flex items-center`}
+              <div className="bg-white rounded-3xl shadow-2xl shadow-gray-300/50 dark:shadow-black/30 overflow-hidden border border-gray-200 dark:border-transparent focus-within:border-[#3B82F6] dark:focus-within:border-[#3B82F6] focus-within:ring-2 focus-within:ring-[#3B82F6]/20 transition-all">
+                {/* Input Area - Increased height */}
+                <div className="relative px-6 py-6">
+                  <div className="relative flex items-center">
+                    {/* Search Icon - Left in EN, Right in AR */}
+                    <div className={`flex-shrink-0 ${isRtl ? 'order-2 ml-4' : 'order-1 mr-4'}`}>
+                      <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <div className={`flex-1 relative ${isRtl ? 'order-1' : 'order-2'}`}>
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder=""
+                        className="w-full text-lg bg-transparent focus:outline-none focus:ring-0 placeholder-gray-400"
+                        style={{ color: '#1f2937', border: 'none', boxShadow: 'none' }}
                         dir={isRtl ? 'rtl' : 'ltr'}
-                      >
-                        <span className="text-lg text-gray-400">{displayedPlaceholder}</span>
-                        <span className={`w-0.5 h-6 bg-[#003057] ${isRtl ? 'mr-0.5' : 'ml-0.5'} animate-blink`} />
-                      </div>
-                    )}
+                      />
+                      {/* Typewriter Placeholder Overlay */}
+                      {!query && (
+                        <div
+                          className={`absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-0' : 'left-0'} pointer-events-none flex items-center`}
+                          dir={isRtl ? 'rtl' : 'ltr'}
+                        >
+                          <span className="text-lg text-gray-400">{displayedPlaceholder}</span>
+                          <span className={`w-0.5 h-6 bg-[#003057] ${isRtl ? 'mr-0.5' : 'ml-0.5'} animate-blink`} />
+                        </div>
+                      )}
+                    </div>
                     {/* Loading indicator */}
                     {isSearching && (
-                      <div className={`absolute top-1/2 -translate-y-1/2 ${isRtl ? 'left-0' : 'right-0'}`}>
+                      <div className={`flex-shrink-0 ${isRtl ? 'order-1 mr-4' : 'order-3 ml-4'}`}>
                         <svg className="w-5 h-5 text-[#003057] animate-spin" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -423,47 +436,21 @@ export default function Home() {
               </button>
             </form>
 
-            {/* Quick Action Pills */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={() => setQuery(isRtl ? 'أريد التقدم لشهادة ESG' : 'I want to apply for ESG certification')}
-                className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white/20 hover:text-white hover:border-white/30 transition-all"
-              >
-                {isRtl ? '🌱 شهادة ESG' : '🌱 ESG Certificate'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setQuery(isRtl ? 'أريد شهادة منشأ' : 'I need a certificate of origin')}
-                className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white/20 hover:text-white hover:border-white/30 transition-all"
-              >
-                {isRtl ? '📜 شهادة منشأ' : '📜 Certificate of Origin'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setQuery(isRtl ? 'تسجيل عضوية جديدة' : 'Register new membership')}
-                className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white/20 hover:text-white hover:border-white/30 transition-all"
-              >
-                {isRtl ? '🏢 عضوية جديدة' : '🏢 New Membership'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setQuery(isRtl ? 'استشارات قانونية' : 'Legal consultancy')}
-                className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white/20 hover:text-white hover:border-white/30 transition-all"
-              >
-                {isRtl ? '⚖️ استشارات قانونية' : '⚖️ Legal Advice'}
-              </button>
-            </div>
+            {/* Trust Line */}
+            <p className="mt-4 text-xs text-gray-500 dark:text-white/40 text-center">
+              {isRtl ? 'مدعوم بمحرك البحث الذكي من غرفة أبوظبي' : 'Powered by ADCCI AI Service Finder'}
+            </p>
+
           </div>
         </div>
       ) : (
-        /* Search Results Section - Dark Theme */
+        /* Search Results Section */
         <div className="min-h-screen pt-24 pb-16 px-6">
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
             <button
               onClick={resetSearch}
-              className="mb-8 flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+              className="mb-8 flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:text-white/60 dark:hover:text-white transition-colors"
             >
               <svg className={`w-5 h-5 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -475,15 +462,15 @@ export default function Home() {
 
             {/* Search Query Display */}
             <div className="mb-8">
-              <p className="text-sm text-white/50 mb-2">
+              <p className="text-sm text-gray-500 dark:text-white/50 mb-2">
                 {isRtl ? 'نتائج البحث عن:' : 'Search results for:'}
               </p>
-              <h2 className="text-2xl font-semibold text-white">&ldquo;{query}&rdquo;</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">&ldquo;{query}&rdquo;</h2>
             </div>
 
             {/* AI Reasoning Summary */}
             {reasoningSummary && (
-              <div className="mb-8 p-5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+              <div className="mb-8 p-5 bg-blue-50 dark:bg-white/5 rounded-2xl border border-blue-100 dark:border-white/10 backdrop-blur-sm">
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-[#3B82F6]/20 rounded-xl flex items-center justify-center">
                     <svg className="w-5 h-5 text-[#3B82F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -491,10 +478,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#60A5FA] mb-1">
+                    <p className="text-sm font-medium text-[#3B82F6] dark:text-[#60A5FA] mb-1">
                       {isRtl ? 'تحليل الذكاء الاصطناعي' : 'AI Analysis'}
                     </p>
-                    <p className="text-white/70 text-sm leading-relaxed">{reasoningSummary}</p>
+                    <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed">{reasoningSummary}</p>
                   </div>
                 </div>
               </div>
@@ -507,7 +494,7 @@ export default function Home() {
                   <button
                     key={service.id}
                     onClick={() => handleServiceClick(service)}
-                    className="w-full text-start bg-white/5 rounded-2xl hover:bg-white/10 transition-all p-6 border border-white/10 group backdrop-blur-sm"
+                    className="w-full text-start bg-white dark:bg-white/5 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all p-6 border border-gray-200 dark:border-white/10 group shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
@@ -516,17 +503,17 @@ export default function Home() {
                             {service.platform}
                           </span>
                         </div>
-                        <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#60A5FA] transition-colors">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-[#3B82F6] dark:group-hover:text-[#60A5FA] transition-colors">
                           {isRtl ? service.nameAr : service.name}
                         </h3>
-                        <p className="text-white/60 text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-600 dark:text-white/60 text-sm mb-3 line-clamp-2">
                           {isRtl ? service.descriptionAr : service.description}
                         </p>
-                        <div className="text-xs text-white/40">
+                        <div className="text-xs text-gray-400 dark:text-white/40">
                           {service.dept}
                         </div>
                       </div>
-                      <div className="flex-shrink-0 w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white/40 group-hover:bg-[#3B82F6]/20 group-hover:text-[#60A5FA] transition-colors">
+                      <div className="flex-shrink-0 w-10 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-400 dark:text-white/40 group-hover:bg-[#3B82F6]/20 group-hover:text-[#3B82F6] dark:group-hover:text-[#60A5FA] transition-colors">
                         {getChannelIcon(service.channelType)}
                       </div>
                     </div>
@@ -535,17 +522,17 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center py-16">
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400 dark:text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <p className="text-white/60 mb-4">
+                <p className="text-gray-600 dark:text-white/60 mb-4">
                   {isRtl ? 'لم يتم العثور على نتائج. جرب كلمات بحث مختلفة.' : 'No results found. Try different search terms.'}
                 </p>
                 <button
                   onClick={resetSearch}
-                  className="text-[#60A5FA] hover:underline font-medium text-sm"
+                  className="text-[#3B82F6] dark:text-[#60A5FA] hover:underline font-medium text-sm"
                 >
                   {isRtl ? 'حاول مرة أخرى' : 'Try again'}
                 </button>
@@ -557,7 +544,7 @@ export default function Home() {
               <div className="mt-8 text-center">
                 <Link
                   href="/services"
-                  className="inline-flex items-center gap-2 text-[#60A5FA] hover:underline font-medium text-sm"
+                  className="inline-flex items-center gap-2 text-[#3B82F6] dark:text-[#60A5FA] hover:underline font-medium text-sm"
                 >
                   {isRtl ? 'تصفح جميع الخدمات' : 'Browse all services'}
                   <svg className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
