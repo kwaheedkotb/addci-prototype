@@ -42,8 +42,7 @@ next-env.d.ts
 
 /app/generated/prisma
 
-# database
-*.db
+# database journal files
 *.db-journal
-prisma/dev.db
 prisma/dev.db-journal
+# Note: prisma/dev.db is included for Vercel deployment (SQLite needs the file)
