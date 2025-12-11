@@ -46,10 +46,20 @@ export default function ServicesPage() {
 
       const response = await fetch(`/api/services?${params.toString()}`)
       const data = await response.json()
-      setServices(data.services)
-      setFilters(data.filters)
+
+      // Handle API errors or missing data gracefully
+      if (data.error || !data.services) {
+        console.error('API error:', data.error)
+        setServices([])
+        setFilters({ departments: [], platforms: [] })
+      } else {
+        setServices(data.services || [])
+        setFilters(data.filters || { departments: [], platforms: [] })
+      }
     } catch (error) {
       console.error('Error fetching services:', error)
+      setServices([])
+      setFilters({ departments: [], platforms: [] })
     } finally {
       setLoading(false)
     }
