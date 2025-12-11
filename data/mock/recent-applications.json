@@ -1,0 +1,68 @@
+{
+  "applications": [
+    {
+      "id": "APP-2024-001248",
+      "organizationName": "Green Energy Corp",
+      "sector": "Energy",
+      "status": "APPROVED",
+      "submittedAt": "2024-12-10T09:30:00Z",
+      "esgScore": 92
+    },
+    {
+      "id": "APP-2024-001247",
+      "organizationName": "TechFlow Solutions",
+      "sector": "Technology",
+      "status": "UNDER_REVIEW",
+      "submittedAt": "2024-12-10T08:15:00Z",
+      "esgScore": null
+    },
+    {
+      "id": "APP-2024-001246",
+      "organizationName": "Sustainable Manufacturing Ltd",
+      "sector": "Manufacturing",
+      "status": "APPROVED",
+      "submittedAt": "2024-12-09T14:45:00Z",
+      "esgScore": 89
+    },
+    {
+      "id": "APP-2024-001245",
+      "organizationName": "Gulf Healthcare Group",
+      "sector": "Healthcare",
+      "status": "CORRECTIONS_REQUESTED",
+      "submittedAt": "2024-12-09T11:20:00Z",
+      "esgScore": null
+    },
+    {
+      "id": "APP-2024-001244",
+      "organizationName": "Desert Finance Partners",
+      "sector": "Finance",
+      "status": "UNDER_REVIEW",
+      "submittedAt": "2024-12-08T16:00:00Z",
+      "esgScore": null
+    },
+    {
+      "id": "APP-2024-001243",
+      "organizationName": "EcoTech Solutions",
+      "sector": "Technology",
+      "status": "APPROVED",
+      "submittedAt": "2024-12-08T10:30:00Z",
+      "esgScore": 87
+    },
+    {
+      "id": "APP-2024-001242",
+      "organizationName": "Oasis Construction",
+      "sector": "Construction",
+      "status": "REJECTED",
+      "submittedAt": "2024-12-07T15:45:00Z",
+      "esgScore": 52
+    },
+    {
+      "id": "APP-2024-001241",
+      "organizationName": "Emirates Retail Group",
+      "sector": "Retail",
+      "status": "APPROVED",
+      "submittedAt": "2024-12-07T09:00:00Z",
+      "esgScore": 78
+    }
+  ]
+}

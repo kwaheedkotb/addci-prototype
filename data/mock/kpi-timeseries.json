@@ -1,0 +1,18 @@
+{
+  "applicationTrend": [
+    { "month": "Jul", "submitted": 28, "approved": 22, "rejected": 4 },
+    { "month": "Aug", "submitted": 35, "approved": 28, "rejected": 5 },
+    { "month": "Sep", "submitted": 42, "approved": 34, "rejected": 6 },
+    { "month": "Oct", "submitted": 38, "approved": 31, "rejected": 4 },
+    { "month": "Nov", "submitted": 45, "approved": 36, "rejected": 7 },
+    { "month": "Dec", "submitted": 42, "approved": 33, "rejected": 5 }
+  ],
+  "processingTime": [
+    { "month": "Jul", "avgDays": 5.2 },
+    { "month": "Aug", "avgDays": 4.8 },
+    { "month": "Sep", "avgDays": 4.5 },
+    { "month": "Oct", "avgDays": 4.3 },
+    { "month": "Nov", "avgDays": 4.1 },
+    { "month": "Dec", "avgDays": 4.2 }
+  ]
+}

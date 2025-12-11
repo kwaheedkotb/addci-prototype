@@ -1,0 +1,40 @@
+{
+  "breakdown": {
+    "environmental": {
+      "score": 72,
+      "trend": "+5%",
+      "metrics": {
+        "carbonReduction": 68,
+        "energyEfficiency": 75,
+        "wasteManagement": 71,
+        "waterConservation": 74
+      }
+    },
+    "social": {
+      "score": 81,
+      "trend": "+3%",
+      "metrics": {
+        "workforceDiversity": 79,
+        "communityPrograms": 85,
+        "healthAndSafety": 82,
+        "employeeWellbeing": 78
+      }
+    },
+    "governance": {
+      "score": 76,
+      "trend": "+2%",
+      "metrics": {
+        "boardStructure": 74,
+        "compliance": 80,
+        "riskManagement": 73,
+        "transparency": 77
+      }
+    }
+  },
+  "averageScore": 76.3,
+  "topPerformers": [
+    { "organization": "Green Energy Corp", "score": 92 },
+    { "organization": "Sustainable Manufacturing Ltd", "score": 89 },
+    { "organization": "EcoTech Solutions", "score": 87 }
+  ]
+}

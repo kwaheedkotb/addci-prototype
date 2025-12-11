@@ -1,0 +1,18 @@
+{
+  "funnel": [
+    { "stage": "SUBMITTED", "count": 248, "percentage": 100 },
+    { "stage": "UNDER_REVIEW", "count": 220, "percentage": 88.7 },
+    { "stage": "CORRECTIONS_REQUESTED", "count": 45, "percentage": 18.1 },
+    { "stage": "APPROVED", "count": 194, "percentage": 78.2 },
+    { "stage": "REJECTED", "count": 39, "percentage": 15.7 }
+  ],
+  "bySector": [
+    { "sector": "Energy", "count": 45, "approved": 38 },
+    { "sector": "Manufacturing", "count": 52, "approved": 41 },
+    { "sector": "Technology", "count": 38, "approved": 32 },
+    { "sector": "Finance", "count": 35, "approved": 28 },
+    { "sector": "Healthcare", "count": 28, "approved": 22 },
+    { "sector": "Construction", "count": 25, "approved": 18 },
+    { "sector": "Other", "count": 25, "approved": 15 }
+  ]
+}

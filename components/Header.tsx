@@ -13,6 +13,7 @@ export default function Header() {
   const isServices = pathname.startsWith('/services')
   const isCustomer = pathname.startsWith('/customer')
   const isStaff = pathname.startsWith('/staff')
+  const isDashboard = pathname.startsWith('/dashboard')
   const isRtl = locale === 'ar'
 
   // On landing page, header is hidden (landing page has its own nav)
@@ -76,6 +77,16 @@ export default function Header() {
                 }`}
               >
                 {t.common.staffPortal}
+              </Link>
+              <Link
+                href="/dashboard/kpi"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isDashboard
+                    ? 'bg-white/20 text-white'
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {t.common.dashboard}
               </Link>
             </nav>
           </div>
@@ -152,6 +163,16 @@ export default function Header() {
             }`}
           >
             {t.common.staffPortal}
+          </Link>
+          <Link
+            href="/dashboard/kpi"
+            className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+              isDashboard
+                ? 'bg-white/20 text-white'
+                : 'text-white/80 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            {t.common.dashboard}
           </Link>
         </nav>
       </div>

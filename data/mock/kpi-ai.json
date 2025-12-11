@@ -1,0 +1,25 @@
+{
+  "prechecksRun": 312,
+  "documentClassifications": 1847,
+  "ocrExtractions": 1523,
+  "aiSuggestionsAccepted": 89.2,
+  "avgConfidenceScore": 94.5,
+  "processingStats": {
+    "avgPrecheckTime": "2.3s",
+    "avgOcrTime": "4.1s",
+    "avgClassificationTime": "1.8s"
+  },
+  "topDocumentTypes": [
+    { "type": "ESG Policy", "count": 248, "accuracy": 96.2 },
+    { "type": "Sustainability Report", "count": 195, "accuracy": 94.8 },
+    { "type": "ISO Certificate", "count": 178, "accuracy": 98.1 },
+    { "type": "Trade License", "count": 248, "accuracy": 97.5 },
+    { "type": "Financial Report", "count": 142, "accuracy": 93.2 }
+  ],
+  "weeklyTrend": [
+    { "week": "W1", "prechecks": 52, "documents": 285 },
+    { "week": "W2", "prechecks": 48, "documents": 312 },
+    { "week": "W3", "prechecks": 55, "documents": 298 },
+    { "week": "W4", "prechecks": 61, "documents": 342 }
+  ]
+}
