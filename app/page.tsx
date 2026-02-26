@@ -147,6 +147,18 @@ export default function Home() {
       window.open(service.externalUrl, '_blank')
     } else if (service.name === 'Chamber ESG Label') {
       router.push('/customer')
+    } else if (service.name === 'Expert Library') {
+      router.push('/services/expert-library')
+    } else if (service.name === 'Global Tenders Hub') {
+      router.push('/services/global-tenders-hub')
+    } else if (service.name === 'Data Hub') {
+      router.push('/services/data-hub')
+    } else if (service.name === 'Flagship & Sectorial Reports') {
+      router.push('/services/flagship-reports')
+    } else if (service.name === 'Procurement Hub') {
+      router.push('/services/procurement-hub')
+    } else if (service.name === 'Market Directory') {
+      router.push('/services/market-directory')
     } else {
       router.push(`/services/${service.id}`)
     }

@@ -274,3 +274,40 @@ select:focus {
   background: var(--chip-review-bg);
   color: var(--chip-review-text);
 }
+
+/* ============================================
+   LEAFLET MAP OVERRIDES
+   ============================================ */
+
+.leaflet-container {
+  border-radius: 0.75rem;
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  border-radius: 0.5rem;
+}
+
+.leaflet-popup-tip {
+  background: var(--panel);
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px;
+}
+
+.market-cluster-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+@media print {
+  .leaflet-control-zoom,
+  .leaflet-control-attribution {
+    display: none !important;
+  }
+}
