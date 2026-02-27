@@ -83,3 +83,82 @@ model ApplicationDocument {
   aiReview      String?  // AI validation / comments on the document
   createdAt     DateTime @default(now())
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STAFF PORTAL — Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum StaffApplicationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PENDING_INFO
+  CLOSED
+}
+
+enum ServiceType {
+  KNOWLEDGE_SHARING
+  CHAMBER_BOOST
+  BUSINESS_MATCHMAKING
+  BUSINESS_DEVELOPMENT
+  BUSINESS_ENABLEMENT
+  POLICY_ADVOCACY
+  LOYALTY_PLUS
+  AD_CONNECT_CONCIERGE
+}
+
+enum StaffRole {
+  ADMIN
+  REVIEWER
+  VIEWER
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STAFF PORTAL — Models
+// ─────────────────────────────────────────────────────────────────────────────
+
+model StaffUser {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String
+  nameAr      String
+  role        StaffRole @default(REVIEWER)
+  department  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  assignedApplications BaseApplication[] @relation("AssignedStaff")
+}
+
+model BaseApplication {
+  id                  String                  @id @default(cuid())
+  serviceType         ServiceType
+  status              StaffApplicationStatus  @default(SUBMITTED)
+  submittedBy         String
+  submittedByEmail    String
+  memberTier          String
+  assignedToId        String?
+  assignedTo          StaffUser?              @relation("AssignedStaff", fields: [assignedToId], references: [id])
+  submittedAt         DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  reviewedAt          DateTime?
+  reviewedBy          String?
+  internalNotes       String?
+  rejectionReason     String?
+  satisfactionScore   Int?
+  satisfactionComment String?
+
+  activityLogs        ActivityLog[]
+}
+
+model ActivityLog {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   BaseApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  serviceType   ServiceType
+  action        String
+  performedBy   String
+  performedAt   DateTime    @default(now())
+  notes         String?
+}
