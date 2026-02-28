@@ -677,7 +677,7 @@ ${formData.governanceProfile?.description ?? ''}
       if (!response.ok) throw new Error('Failed to submit')
 
       const result = await response.json()
-      router.push(`/customer/${result.application.id}`)
+      router.push(`/member/applications/${result.application.id}`)
     } catch (error) {
       console.error('Submit error:', error)
       setErrors({ submit: isRtl ? 'فشل في إرسال الطلب. يرجى المحاولة مرة أخرى.' : 'Failed to submit application. Please try again.' })

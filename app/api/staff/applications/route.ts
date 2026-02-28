@@ -61,6 +61,8 @@ export async function GET(request: NextRequest) {
           assignedTo: {
             select: { id: true, name: true, nameAr: true },
           },
+          esgApplication: !serviceType || serviceType === 'ESG_LABEL',
+          knowledgeSharingApplication: !serviceType || serviceType === 'KNOWLEDGE_SHARING',
         },
       }),
       prisma.baseApplication.count({ where }),

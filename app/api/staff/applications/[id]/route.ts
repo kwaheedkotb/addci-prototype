@@ -20,6 +20,8 @@ export async function GET(
           orderBy: { performedAt: 'desc' },
           take: 50,
         },
+        esgApplication: true,
+        knowledgeSharingApplication: true,
       },
     })
 
@@ -82,6 +84,19 @@ export async function PATCH(
       updateData.rejectionReason = body.rejectionReason
     }
 
+    // Handle KnowledgeSharingApplication nested updates
+    const ksFields: Record<string, unknown> = {}
+    if (body.responseText !== undefined) ksFields.responseText = body.responseText
+    if (body.responseAttachmentUrl !== undefined) ksFields.responseAttachmentUrl = body.responseAttachmentUrl
+    if (body.responseAttachmentName !== undefined) ksFields.responseAttachmentName = body.responseAttachmentName
+    if (body.respondedAt !== undefined) ksFields.respondedAt = new Date(body.respondedAt)
+    if (body.respondedBy !== undefined) ksFields.respondedBy = body.respondedBy
+    if (body.surveySentAt !== undefined) ksFields.surveySentAt = new Date(body.surveySentAt)
+
+    if (Object.keys(ksFields).length > 0 && current.serviceType === 'KNOWLEDGE_SHARING') {
+      updateData.knowledgeSharingApplication = { update: ksFields }
+    }
+
     // Update application
     const updated = await prisma.baseApplication.update({
       where: { id },
@@ -94,6 +109,8 @@ export async function PATCH(
           orderBy: { performedAt: 'desc' },
           take: 50,
         },
+        esgApplication: true,
+        knowledgeSharingApplication: true,
       },
     })
 

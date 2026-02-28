@@ -54,6 +54,37 @@ export default function CustomerApplicationDetail() {
 
   async function fetchApplication() {
     try {
+      // Try member API (BaseApplication) first
+      const memberRes = await fetch(`/api/member/applications/${params.id}`)
+      const memberData = await memberRes.json()
+      if (memberData.success && memberData.application) {
+        const app = memberData.application
+        setApplication({
+          id: app.id,
+          applicantName: app.submittedBy || '',
+          organizationName: app.submittedBy || '',
+          email: app.submittedByEmail || '',
+          sector: app.esgApplication?.subSector || app.serviceType?.replace(/_/g, ' ') || '',
+          description: app.esgApplication?.description || app.internalNotes || '',
+          status: app.status,
+          aiPrecheckResult: null,
+          createdAt: app.submittedAt,
+          updatedAt: app.updatedAt,
+          reviewNotes: (app.activityLogs || [])
+            .filter((log: { action: string }) => !log.action.toLowerCase().includes('internal'))
+            .map((log: { id: string; action: string; performedAt: string; performedBy: string }) => ({
+              id: log.id,
+              authorType: log.performedBy === 'System' ? 'SYSTEM' : 'STAFF',
+              note: log.action,
+              createdAt: log.performedAt,
+            })),
+          certificate: null,
+        })
+        setDescription(app.esgApplication?.description || app.internalNotes || '')
+        return
+      }
+
+      // Fallback to legacy Application model
       const res = await fetch(`/api/applications/${params.id}`)
       const data = await res.json()
       if (data.success) {
@@ -200,7 +231,7 @@ export default function CustomerApplicationDetail() {
         )}
 
         {/* Corrections Required */}
-        {application.status === 'CORRECTIONS_REQUESTED' && (
+        {application.status === 'PENDING_INFO' && (
           <div className="px-6 py-4 bg-orange-50 border-b border-orange-100">
             <div className="flex items-start gap-3">
               <svg className="w-6 h-6 text-orange-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -238,7 +269,7 @@ export default function CustomerApplicationDetail() {
           {/* Description - Editable if corrections requested */}
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.customer.form.description}</label>
-            {application.status === 'CORRECTIONS_REQUESTED' && editing ? (
+            {application.status === 'PENDING_INFO' && editing ? (
               <div className="space-y-4">
                 <textarea
                   value={description}
@@ -295,7 +326,7 @@ export default function CustomerApplicationDetail() {
             ) : (
               <div>
                 <p className="whitespace-pre-wrap p-4 rounded-lg" style={{ background: 'var(--panel-2)', color: 'var(--text)' }}>{application.description}</p>
-                {application.status === 'CORRECTIONS_REQUESTED' && (
+                {application.status === 'PENDING_INFO' && (
                   <button
                     onClick={() => setEditing(true)}
                     className="mt-4 inline-flex items-center gap-2"

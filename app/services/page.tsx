@@ -80,6 +80,8 @@ export default function ServicesPage() {
       router.push('/services/procurement-hub')
     } else if (service.name === 'Market Directory') {
       router.push('/services/market-directory')
+    } else if (service.name === 'Knowledge Sharing & Upskilling' || service.name === 'Upskilling Programs') {
+      router.push('/services/knowledge-sharing')
     } else {
       router.push(`/services/${service.id}`)
     }

@@ -101,6 +101,7 @@ enum ServiceType {
   KNOWLEDGE_SHARING
   CHAMBER_BOOST
   BUSINESS_MATCHMAKING
+  ESG_LABEL
   BUSINESS_DEVELOPMENT
   BUSINESS_ENABLEMENT
   POLICY_ADVOCACY
@@ -150,6 +151,66 @@ model BaseApplication {
   satisfactionComment String?
 
   activityLogs        ActivityLog[]
+  esgApplication      EsgApplication?
+  knowledgeSharingApplication KnowledgeSharingApplication?
+}
+
+model EsgApplication {
+  id                   String          @id @default(cuid())
+  baseApplication      BaseApplication @relation(fields: [baseApplicationId], references: [id], onDelete: Cascade)
+  baseApplicationId    String          @unique
+
+  // ESG-specific fields
+  phoneNumber          String?
+  tradeLicenseNumber   String?
+  subSector            String?
+  country              String?
+  environmentalProfile String?
+  socialProfile        String?
+  governanceProfile    String?
+
+  // Multi-phase ESG workflow
+  eoiSubmittedAt       DateTime?
+  eoiApprovedAt        DateTime?
+  fullAppSubmittedAt   DateTime?
+  fullAppReviewedAt    DateTime?
+  endorsedAt           DateTime?
+
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model KnowledgeSharingApplication {
+  id                     String          @id @default(cuid())
+  baseApplication        BaseApplication @relation(fields: [baseApplicationId], references: [id], onDelete: Cascade)
+  baseApplicationId      String          @unique
+
+  requestType            String          // 'CALENDAR_BOOKING' | 'TRAINING_QUERY'
+  programType            String?         // 'Knowledge Series' | 'Upskilling Program'
+  programTypeAr          String?
+  programName            String?
+  programNameAr          String?
+  sessionDate            DateTime?
+  sessionDates           String?         // JSON array for multiple dates
+  numberOfAttendees      Int?
+  attendeeDetails        String?         // JSON array { name, email, phone }
+  queryText              String?
+  attachmentUrl          String?
+  attachmentName         String?
+
+  // Staff response fields
+  responseText           String?
+  responseAttachmentUrl  String?
+  responseAttachmentName String?
+  respondedAt            DateTime?
+  respondedBy            String?
+
+  // Post-completion
+  surveySentAt           DateTime?
+  completedAt            DateTime?
+
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
 }
 
 model ActivityLog {

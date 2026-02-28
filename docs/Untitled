@@ -1,0 +1,582 @@
+Fix all critical and major bugs identified in
+/docs/BUG_REPORT.md. Read that file in full before
+touching anything.
+
+Also read:
+1. /docs/ARCHITECTURE.md
+2. /docs/UI_STANDARDS.md
+3. prisma/schema.prisma
+4. Every file referenced in the bug descriptions below
+
+Fix bugs in the order listed. After each fix, mark it
+complete in a local checklist before moving to the next.
+Do not skip any item. Do not fix bugs not listed here.
+
+---
+
+CRITICAL BUGS
+
+---
+
+BUG-001: ESG post-submission redirect broken
+
+File: components/ESGAccordionForm.tsx:680
+      app/customer/[id]/page.tsx:57
+      app/api/applications/route.ts:77
+
+Fix:
+The POST /api/applications returns a BaseApplication id.
+The redirect goes to /customer/${id}. The /customer/[id]
+page fetches from /api/applications/${id} which queries
+the legacy Application table — wrong model.
+
+Two changes required:
+
+1. Update /customer/[id]/page.tsx (or wherever the
+   post-submission detail page lives):
+   Change the fetch from /api/applications/${id}
+   to /api/member/applications/${id}
+   which correctly queries BaseApplication.
+
+2. If /customer/[id] and /member/applications/[id] are
+   two different pages doing the same thing — consolidate.
+   The redirect after ESG submission should go to
+   /member/applications/${id} (the new unified detail page).
+   Update ESGAccordionForm.tsx redirect accordingly.
+
+Verify: Submit ESG form → redirect lands on correct
+page → application details visible.
+
+---
+
+BUG-002 & BUG-003: Staff notes and status updates
+write to legacy model
+
+File: app/staff/application/[id]/page.tsx:255
+      and wherever saveNote and status update functions are
+
+Fix:
+Both the note save and status update functions POST/PUT
+to /api/applications/${id}/notes and
+/api/applications/${id}/status — legacy routes that
+query the Application table.
+
+For BaseApplication records these IDs don't exist in
+the legacy table — Prisma throws a foreign key error.
+
+1. Update saveNote to POST to:
+   /api/staff/applications/${id}/notes
+   Create this route if it doesn't exist:
+   File: app/api/staff/applications/[id]/notes/route.ts
+   Handler: creates an entry in ActivityLog (not ReviewNote)
+   with the note content, applicationId, performedBy staff
+
+2. Update status update function to PATCH to:
+   /api/staff/applications/${id}
+   (the existing staff PATCH route that correctly
+   updates BaseApplication)
+
+3. Ensure the staff detail page reads notes from
+   ActivityLog (already in the detail page presumably)
+   not from the legacy ReviewNote model
+
+---
+
+BUG-004: CORRECTIONS_REQUESTED not in enum
+
+File: prisma/schema.prisma
+      anywhere ApplicationStatus or StaffApplicationStatus
+      enum is defined
+
+Fix:
+Add CORRECTIONS_REQUESTED to the ApplicationStatus
+(or StaffApplicationStatus) enum in schema.prisma.
+
+Check if CORRECTIONS_REQUESTED is semantically the
+same as PENDING_INFO. If yes, add it as an alias or
+map it. If no, add it as a distinct value.
+
+After updating schema:
+  npx prisma generate
+  npx prisma db push
+
+Update lib/service-metadata.ts to include a
+member-friendly label for CORRECTIONS_REQUESTED:
+  EN: "Corrections Required"
+  AR: "مطلوب تصحيحات"
+  color: purple (same as PENDING_INFO)
+
+---
+
+BUG-005: Staff application detail page unprotected
+
+File: app/staff/application/[id]/page.tsx
+
+Fix:
+Wrap the page with StaffAccessGuard at the top level,
+consistent with all other staff pages.
+
+Check how other staff pages apply StaffAccessGuard
+and use the exact same pattern here.
+
+---
+
+BUG-006: Env variable name mismatch
+
+File: .env.example
+      prisma/schema.prisma
+
+Fix:
+Read both files and identify the exact mismatch.
+The variable referenced in schema.prisma datasource
+directUrl must exactly match what is in .env.example.
+
+Pick one name and make both files consistent.
+Do not change .env.local (it has real credentials).
+Only fix .env.example and schema.prisma to match.
+
+After fixing schema.prisma:
+  npx prisma generate
+  (no db push needed — datasource url change only)
+
+---
+
+BUG-007: /customer and /member route trees mixed
+
+Files: All files in app/customer/ and app/member/
+       Navigation links across the platform
+
+Fix:
+Audit both route trees and identify what each contains.
+Report what is in /customer vs /member before fixing.
+
+The fix:
+- Pick ONE canonical path for the member-facing
+  application journey. Recommended: /member
+- If /customer/[id] is a detail page that duplicates
+  /member/applications/[id] — remove the duplicate
+  and redirect /customer/[id] → /member/applications/[id]
+- Update ALL navigation links, redirects, and internal
+  hrefs that reference /customer to use /member instead
+- Update ESGAccordionForm redirect (ties back to BUG-001)
+- Update "My Applications" nav link
+- Update any CTA buttons that link to /customer
+
+After fixing, /customer routes should either redirect
+to /member equivalents or be removed entirely.
+No page should exist at both paths.
+
+---
+
+MAJOR BUGS
+
+---
+
+BUG-008, BUG-009, BUG-010:
+applicantName, sector, description silently dropped
+on ESG submission
+
+File: app/api/applications/route.ts:39 (or equivalent
+      ESG submission API route)
+      prisma/schema.prisma (EsgApplication model)
+
+Fix:
+These fields are sent by the ESG form but not persisted
+because EsgApplication model doesn't have them.
+
+1. Add missing fields to EsgApplication in schema.prisma:
+   applicantName  String?
+   sector         String?
+   description    String?
+   aiPrecheckResult String?
+
+2. Run: npx prisma generate && npx prisma db push
+
+3. Update the ESG submission API route to persist
+   these fields into EsgApplication:
+   applicantName: body.applicantName,
+   sector: body.sector,
+   description: body.description,
+   aiPrecheckResult: body.aiPrecheckResult
+
+4. Update the staff detail page ESG section to display
+   these fields when serviceType = ESG_LABEL
+
+5. Update the member detail page ESG summary section
+   to display description and sector
+
+---
+
+BUG-011: Pagination broken when legacy records exist
+
+File: app/api/member/applications/route.ts
+
+Fix:
+When legacy Application records and BaseApplication
+records are merged, the total count and pagination
+math breaks because the counts come from two separate
+queries.
+
+Fix the pagination to:
+1. Count both sources separately
+2. total = legacyCount + baseCount
+3. Apply page/limit correctly to the merged and sorted
+   combined array
+4. Return correct totalPages based on combined total
+
+If the legacy Application records are now 0 (DB was
+cleared), add a comment noting this fix handles the
+edge case when legacy records may exist.
+
+---
+
+BUG-012: /member/applications list page returns 404
+
+Fix:
+Check if app/member/applications/page.tsx exists.
+If it doesn't — create it.
+
+This page is the "My Applications" unified dashboard
+that was built in a previous prompt. If it exists at
+a different path (e.g. /customer/applications), create
+a redirect from /member/applications to that path.
+
+Verify: navigating to /member/applications loads
+the unified applications dashboard.
+
+---
+
+BUG-013: /customer/new page is orphaned
+
+File: app/customer/new/page.tsx (or equivalent)
+
+Fix:
+This page is unreachable from the UI.
+Two options — pick the correct one:
+
+If this page is the ESG application form:
+- Add a link to it from /services/esg-label
+  or confirm the existing "Apply" button links here
+- If ESGAccordionForm is already embedded in another
+  page, redirect /customer/new to that page instead
+
+If this page is redundant:
+- Add a redirect: from /customer/new to
+  /services/esg-label
+
+Either way, no page should be completely unreachable.
+
+---
+
+BUG-014: /customer/new has no dark mode support
+
+File: app/customer/new/page.tsx (or equivalent)
+
+Fix:
+Replace any hardcoded light-mode colors with CSS
+custom properties per UI_STANDARDS.md rule #2.
+
+Search for:
+- bg-white → use var(--panel) or theme-panel class
+- text-gray-900 → use style={{ color: 'var(--text)' }}
+- border-gray-200 → use var(--border)
+- Any hex colors (#ffffff, #000000 etc.)
+
+Replace all with appropriate CSS custom properties.
+
+---
+
+BUG-015: html lang attribute hardcoded as "en"
+
+File: app/layout.tsx (or root layout)
+
+Fix:
+The <html> element must reflect the current locale.
+
+Read how the I18nProvider or language context determines
+the current language (isRtl, locale, lang).
+
+Update the root layout to set:
+<html lang={locale} dir={dir}>
+
+where locale = 'en' or 'ar' and dir = 'ltr' or 'rtl'
+based on the active language from context or cookies.
+
+If the root layout is a server component and cannot
+access client context directly:
+- Use a cookie or header to determine language
+- Or move the lang/dir attributes to a client wrapper
+  component that reads from I18nContext
+
+---
+
+BUG-016: KPI Dashboard duplicate header
+
+File: app/dashboard/kpi/page.tsx (or equivalent)
+
+Fix:
+The page renders two headers — one from the global
+layout and one rendered locally in the page component.
+
+Remove the locally rendered header from the page
+component. Keep only the global layout header.
+
+Verify: /dashboard/kpi shows one header only.
+
+---
+
+BUG-017: Activity feed badge shows serviceType
+instead of application status
+
+File: app/staff/page.tsx — activity feed section
+
+Fix:
+The badge in the activity feed renders serviceType
+(e.g. "ESG_LABEL") instead of application status
+(e.g. "Under Review").
+
+Update the badge to show the action description or
+status from the ActivityLog entry.
+Use ApplicationStatusBadge component if the entry
+contains a status value.
+If the entry is a general action log (not a status
+change), show the service name in human-readable form
+using lib/service-metadata.ts nameEn value.
+
+---
+
+BUG-018: Tier filter dropdown sends nothing to API
+
+File: app/staff/[serviceSlug]/page.tsx or
+      wherever the StaffFilterBar is configured for
+      the listing pages
+
+Fix:
+The tier filter dropdown exists in the UI but the
+selected value is never appended to the API query
+params when fetching applications.
+
+1. Find where the filter state is collected and
+   appended to the fetch URL
+2. Add memberTier to the query params:
+   if (filters.tier) params.append('tier', filters.tier)
+3. Update GET /api/staff/applications/route.ts to
+   accept and apply the tier filter:
+   if (tier) where.memberTier = tier
+
+---
+
+BUG-019: React hooks rules violation in staff detail
+
+File: app/staff/application/[id]/page.tsx
+
+Fix:
+A conditional notFound() or redirect() call appears
+between hook calls (useState, useEffect etc.).
+
+React rules require hooks to be called unconditionally
+at the top level. Conditional returns or throws must
+happen AFTER all hooks.
+
+Move all hooks to the top of the component.
+Move the notFound() / redirect() check to AFTER
+all hooks have been declared.
+
+Pattern:
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  // ... all other hooks first
+
+  // THEN conditional logic:
+  if (!loading && !data) {
+    return <NotFound />  // don't call notFound() — render component
+  }
+
+---
+
+BUG-020: Missing fetchApplication in useEffect
+dependency array
+
+File: app/staff/application/[id]/page.tsx
+
+Fix:
+useEffect that calls fetchApplication is missing
+fetchApplication in its dependency array.
+
+Either:
+1. Add fetchApplication to the dependency array
+   (if it's stable / wrapped in useCallback)
+2. Or move fetchApplication definition inside
+   the useEffect
+3. Or wrap fetchApplication in useCallback with
+   correct dependencies
+
+Whichever matches the existing code pattern — be
+consistent with how other effects in this file are
+structured.
+
+---
+
+BUG-021: Staff PATCH crashes if no linked KS record
+
+File: app/api/staff/applications/[id]/route.ts
+
+Fix:
+When PATCH is called for a KNOWLEDGE_SHARING application
+and no KnowledgeSharingApplication record exists yet
+(e.g. the application was created but extension record
+failed), the nested update crashes.
+
+Fix with upsert instead of update for extension models:
+
+knowledgeSharingApplication: {
+  upsert: {
+    create: { ...knowledgeSharingFields,
+      baseApplicationId: id },
+    update: { ...knowledgeSharingFields }
+  }
+}
+
+Apply the same defensive upsert pattern to
+EsgApplication nested update as well.
+
+---
+
+BUG-022: No validation on serviceType/status query
+params before Prisma enum cast
+
+File: app/api/staff/applications/route.ts
+
+Fix:
+If an invalid serviceType or status value is passed
+as a query param, Prisma throws an unhandled error.
+
+Add validation before using the values:
+
+const VALID_SERVICE_TYPES = Object.values(ServiceType)
+const VALID_STATUSES = Object.values(ApplicationStatus)
+
+if (serviceType && !VALID_SERVICE_TYPES.includes(serviceType)) {
+  return NextResponse.json({ error: 'Invalid serviceType' }, { status: 400 })
+}
+if (status && !VALID_STATUSES.includes(status)) {
+  return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+}
+
+Import ServiceType and ApplicationStatus enums from
+@prisma/client for the validation.
+
+---
+
+BUG-023 & BUG-024: Legacy GET and PUT /api/applications
+routes target wrong model
+
+Files: app/api/applications/route.ts (GET handler)
+       app/api/applications/[id]/route.ts (GET and PUT)
+
+Fix:
+These legacy routes still read/write to the Application
+model. Any staff or member code still calling these
+routes for BaseApplication records gets wrong data.
+
+1. GET /api/applications:
+   Check if anything still calls this route.
+   If nothing calls it for listing — add a deprecation
+   comment and return empty array with a warning header.
+   If something calls it — update it to read from
+   BaseApplication.
+
+2. GET /api/applications/[id]:
+   Update to first try BaseApplication, fall back to
+   legacy Application if not found (bridge query).
+   This ensures both old and new records are accessible
+   during transition.
+
+3. PUT /api/applications/[id] (status update):
+   Check if anything still calls this.
+   If the staff portal status update was fixed in
+   BUG-003 to use /api/staff/applications/[id] —
+   this route may be unused.
+   Add a deprecation comment. Do not delete yet.
+
+---
+
+BUG-025: ANTHROPIC_API_KEY missing from .env.example
+
+File: .env.example
+
+Fix:
+Add the missing entry:
+  ANTHROPIC_API_KEY="your_anthropic_api_key_here"
+
+Add a comment above it:
+  # Required for AI Summary and AI Recommended Actions
+  # in staff application detail pages
+  # Get your key from https://console.anthropic.com
+
+---
+
+AFTER ALL FIXES
+
+1. Run: npx prisma generate (if schema was changed)
+2. Run: npx prisma db push (if schema was changed)
+3. Run: npm run build
+   Fix any TypeScript or build errors introduced.
+   Do not suppress errors with ts-ignore.
+4. Run: npm run lint
+   Fix any lint errors.
+
+5. Update /docs/BUG_REPORT.md:
+   Change status of each fixed bug from "Open" to "Fixed"
+   Add a "Fixed in" note with the date.
+
+6. Commit:
+   git add .
+   git commit -m "fix: resolve all critical and major bugs
+
+   Critical fixes:
+   - BUG-001: ESG post-submission redirect to correct model
+   - BUG-002: Staff notes write to ActivityLog not legacy table
+   - BUG-003: Staff status updates use correct PATCH route
+   - BUG-004: Add CORRECTIONS_REQUESTED to ApplicationStatus enum
+   - BUG-005: Add StaffAccessGuard to application detail page
+   - BUG-006: Fix env variable name mismatch in schema.prisma
+   - BUG-007: Consolidate /customer and /member route trees
+
+   Major fixes:
+   - BUG-008/009/010: Persist dropped ESG fields
+   - BUG-011: Fix pagination with merged data sources
+   - BUG-012: Fix /member/applications 404
+   - BUG-013: Fix orphaned /customer/new page
+   - BUG-014: Fix dark mode on customer/new page
+   - BUG-015: Fix hardcoded html lang attribute
+   - BUG-016: Remove duplicate KPI dashboard header
+   - BUG-017: Fix activity feed badge shows serviceType
+   - BUG-018: Fix tier filter not sent to API
+   - BUG-019: Fix React hooks rules violation
+   - BUG-020: Fix missing useEffect dependency
+   - BUG-021: Use upsert for extension model PATCH
+   - BUG-022: Validate enum params before Prisma cast
+   - BUG-023/024: Fix legacy API routes bridge query
+   - BUG-025: Add ANTHROPIC_API_KEY to .env.example"
+
+   git push origin main
+
+---
+
+MANDATORY STANDARDS
+- All colors: CSS custom properties only
+- No hardcoded colors introduced in any fix
+- RTL support maintained on all modified components
+- Read /docs/UI_STANDARDS.md before any UI changes
+- Read /docs/ARCHITECTURE.md before any API changes
+
+---
+
+DO NOT
+- Fix minor bugs (BUG-026 through BUG-055)
+- Fix deferred items (auth, AI mocks, file storage)
+- Introduce new features while fixing bugs
+- Suppress TypeScript errors with ts-ignore
+- Skip the build check at the end
+- Mark bugs as fixed without verifying the fix works
