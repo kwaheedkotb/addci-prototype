@@ -80,6 +80,15 @@ const SERVICES: ServiceCardDef[] = [
     icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>,
   },
   {
+    id: '04', serviceType: 'ESG_LABEL',
+    name: 'Chamber ESG Label', nameAr: 'ختم الاستدامة للغرفة',
+    slug: 'esg-label', dept: 'Business Connect & Services', deptAr: 'ربط الأعمال والخدمات',
+    sla: 'TBD (multi-phase)', slaAr: 'يُحدد لاحقاً (متعدد المراحل)',
+    category: 'Certificates', categoryAr: 'الشهادات',
+    categoryColor: 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30',
+    icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8 0 5.5-4.78 10-10 10Z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>,
+  },
+  {
     id: '05', serviceType: 'BUSINESS_DEVELOPMENT',
     name: 'Business Development Services', nameAr: 'خدمات تطوير الأعمال',
     slug: 'business-development', dept: 'Business Connect & Services', deptAr: 'ربط الأعمال والخدمات',
@@ -132,6 +141,7 @@ const SERVICE_TYPE_SLUG: Record<string, string> = {
   KNOWLEDGE_SHARING: 'knowledge-sharing',
   CHAMBER_BOOST: 'chamber-boost',
   BUSINESS_MATCHMAKING: 'business-matchmaking',
+  ESG_LABEL: 'esg-label',
   BUSINESS_DEVELOPMENT: 'business-development',
   BUSINESS_ENABLEMENT: 'business-enablement',
   POLICY_ADVOCACY: 'policy-advocacy',
@@ -246,47 +256,16 @@ export default function StaffPortalHub() {
     try {
       const res = await fetch('/api/staff/stats')
       const data = await res.json()
-      if (data.success) setStats(data.stats)
+      if (data.success) {
+        setStats(data.stats)
+        if (data.serviceCounts) {
+          setServiceCounts(data.serviceCounts)
+        }
+      }
     } catch (err) {
       console.error('Error fetching stats:', err)
     } finally {
       setLoadingStats(false)
-    }
-  }, [])
-
-  const fetchServiceCounts = useCallback(async () => {
-    try {
-      // Fetch counts per service type
-      const counts: ServiceCounts = {}
-      for (const svc of SERVICES) {
-        try {
-          const res = await fetch(`/api/staff/applications?serviceType=${svc.serviceType}&status=SUBMITTED&pageSize=1`)
-          const data = await res.json()
-          const totalRes = await fetch(`/api/staff/applications?serviceType=${svc.serviceType}&pageSize=1`)
-          const totalData = await totalRes.json()
-
-          // Calculate oldest pending days
-          let oldestDays = 0
-          if (data.success && data.totalCount > 0) {
-            const oldestRes = await fetch(`/api/staff/applications?serviceType=${svc.serviceType}&status=SUBMITTED&sortBy=submittedAt&sortOrder=asc&pageSize=1`)
-            const oldestData = await oldestRes.json()
-            if (oldestData.success && oldestData.applications.length > 0) {
-              const submitted = new Date(oldestData.applications[0].submittedAt)
-              oldestDays = Math.floor((Date.now() - submitted.getTime()) / (1000 * 60 * 60 * 24))
-            }
-          }
-
-          counts[svc.serviceType] = {
-            total: totalData.success ? totalData.totalCount : 0,
-            oldestPendingDays: oldestDays,
-          }
-        } catch {
-          counts[svc.serviceType] = { total: 0, oldestPendingDays: 0 }
-        }
-      }
-      setServiceCounts(counts)
-    } catch (err) {
-      console.error('Error fetching service counts:', err)
     }
   }, [])
 
@@ -306,9 +285,8 @@ export default function StaffPortalHub() {
 
   useEffect(() => {
     fetchStats()
-    fetchServiceCounts()
     fetchActivity()
-  }, [fetchStats, fetchServiceCounts, fetchActivity])
+  }, [fetchStats, fetchActivity])
 
   const roleLabels: Record<string, { en: string; ar: string }> = {
     ADMIN: { en: 'Admin', ar: 'مدير' },
@@ -400,7 +378,7 @@ export default function StaffPortalHub() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {loadingStats ? (
-                Array.from({ length: 8 }).map((_, i) => <ServiceCardSkeleton key={i} />)
+                Array.from({ length: 9 }).map((_, i) => <ServiceCardSkeleton key={i} />)
               ) : (
                 SERVICES.map(svc => {
                   const counts = serviceCounts[svc.serviceType] || { total: 0, oldestPendingDays: 0 }

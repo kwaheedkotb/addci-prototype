@@ -7,7 +7,7 @@ export async function GET() {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-    const [totalOpen, pendingReview, resolvedToday, avgResolution] = await Promise.all([
+    const [totalOpen, pendingReview, resolvedToday, avgResolution, countsByService, oldestPending] = await Promise.all([
       // Total open applications (not CLOSED, not REJECTED, not APPROVED)
       prisma.baseApplication.count({
         where: {
@@ -41,6 +41,21 @@ export async function GET() {
           reviewedAt: true,
         },
       }),
+
+      // Per-service total counts (single query)
+      prisma.baseApplication.groupBy({
+        by: ['serviceType'],
+        _count: { _all: true },
+      }),
+
+      // Oldest pending application per service (for SLA dot)
+      prisma.baseApplication.groupBy({
+        by: ['serviceType'],
+        where: {
+          status: { in: ['SUBMITTED', 'UNDER_REVIEW'] },
+        },
+        _min: { submittedAt: true },
+      }),
     ])
 
     let avgResolutionDays = 0
@@ -53,6 +68,22 @@ export async function GET() {
       avgResolutionDays = Math.round((totalDays / avgResolution.length) * 10) / 10
     }
 
+    // Build serviceCounts map: { SERVICE_TYPE: { total, oldestPendingDays } }
+    const serviceCounts: Record<string, { total: number; oldestPendingDays: number }> = {}
+    for (const row of countsByService) {
+      serviceCounts[row.serviceType] = { total: row._count._all, oldestPendingDays: 0 }
+    }
+    for (const row of oldestPending) {
+      if (row._min.submittedAt) {
+        const days = Math.floor((now.getTime() - row._min.submittedAt.getTime()) / (1000 * 60 * 60 * 24))
+        if (serviceCounts[row.serviceType]) {
+          serviceCounts[row.serviceType].oldestPendingDays = days
+        } else {
+          serviceCounts[row.serviceType] = { total: 0, oldestPendingDays: days }
+        }
+      }
+    }
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -61,6 +92,7 @@ export async function GET() {
         resolvedToday,
         avgResolutionDays,
       },
+      serviceCounts,
     })
   } catch (error) {
     console.error('Error fetching staff stats:', error)

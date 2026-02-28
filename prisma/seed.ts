@@ -4,188 +4,19 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Clear existing data
+  await prisma.activityLog.deleteMany()
+  await prisma.knowledgeSharingApplication.deleteMany()
+  await prisma.esgApplication.deleteMany()
+  await prisma.baseApplication.deleteMany()
+  await prisma.staffUser.deleteMany()
   await prisma.certificate.deleteMany()
   await prisma.reviewNote.deleteMany()
+  await prisma.applicationDocument.deleteMany()
   await prisma.application.deleteMany()
   await prisma.service.deleteMany()
 
-  // Create 5 sample applications with different statuses
-  const applications = await Promise.all([
-    // Application 1: SUBMITTED
-    prisma.application.create({
-      data: {
-        applicantName: 'Ahmed Al-Rashid',
-        organizationName: 'Green Energy Solutions LLC',
-        email: 'ahmed@greenenergy.ae',
-        sector: 'Energy',
-        description: 'Our company focuses on renewable energy solutions including solar panel installations and wind turbine maintenance. We have reduced carbon emissions by 40% in our operations through LED lighting and smart building management systems.',
-        status: 'SUBMITTED',
-        aiPrecheckResult: 'Application appears complete. Strong environmental metrics provided. Consider adding social impact data such as employee training programs or community initiatives.',
-        reviewNotes: {
-          create: [
-            {
-              authorType: 'SYSTEM',
-              note: 'Application submitted for ESG certification review.',
-            },
-          ],
-        },
-      },
-    }),
+  // ─── Service Catalog ──────────────────────────────────────────────────────────
 
-    // Application 2: UNDER_REVIEW
-    prisma.application.create({
-      data: {
-        applicantName: 'Sara Mohammed',
-        organizationName: 'Sustainable Textiles Co.',
-        email: 'sara@sustainabletextiles.com',
-        sector: 'Manufacturing',
-        description: 'We manufacture eco-friendly textiles using organic cotton and recycled materials. Our water recycling system saves 1 million liters annually. We employ 200 workers with fair wages and comprehensive health benefits.',
-        status: 'UNDER_REVIEW',
-        aiPrecheckResult: 'Excellent application with comprehensive ESG data. Environmental and social metrics are well-documented. Governance structure could be elaborated further.',
-        reviewNotes: {
-          create: [
-            {
-              authorType: 'SYSTEM',
-              note: 'Application submitted for ESG certification review.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Strong application overall. Reviewing environmental claims against industry benchmarks.',
-            },
-          ],
-        },
-      },
-    }),
-
-    // Application 3: CORRECTIONS_REQUESTED
-    prisma.application.create({
-      data: {
-        applicantName: 'Khalid Ibrahim',
-        organizationName: 'Desert Construction Group',
-        email: 'khalid@desertconstruction.ae',
-        sector: 'Construction',
-        description: 'Major construction firm focusing on green building practices.',
-        status: 'CORRECTIONS_REQUESTED',
-        aiPrecheckResult: 'Application needs more detail. Missing specific environmental KPIs, carbon footprint data, and waste management metrics. Social responsibility section is incomplete.',
-        reviewNotes: {
-          create: [
-            {
-              authorType: 'SYSTEM',
-              note: 'Application submitted for ESG certification review.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Please provide more details on your green building certifications, waste reduction metrics, and worker safety programs. Include specific numbers and targets.',
-            },
-          ],
-        },
-      },
-    }),
-
-    // Application 4: APPROVED
-    prisma.application.create({
-      data: {
-        applicantName: 'Fatima Al-Hassan',
-        organizationName: 'Clean Water Technologies',
-        email: 'fatima@cleanwater.ae',
-        sector: 'Utilities',
-        description: 'We provide water purification and desalination services using solar-powered systems. Our technology reduces energy consumption by 60% compared to traditional methods. We have trained 500+ local engineers and support 10 community water projects annually.',
-        status: 'APPROVED',
-        aiPrecheckResult: 'Outstanding application with comprehensive ESG metrics. All three pillars (Environmental, Social, Governance) are well-addressed with quantifiable data.',
-        reviewNotes: {
-          create: [
-            {
-              authorType: 'SYSTEM',
-              note: 'Application submitted for ESG certification review.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Excellent documentation of environmental impact. Social initiatives are impressive.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Application approved. ESG certificate issued.',
-            },
-          ],
-        },
-        certificate: {
-          create: {
-            certificateNumber: 'ESG-2024-001',
-            issuedAt: new Date('2024-11-15'),
-          },
-        },
-      },
-    }),
-
-    // Application 5: REJECTED
-    prisma.application.create({
-      data: {
-        applicantName: 'Omar Sayed',
-        organizationName: 'Industrial Chemicals Ltd',
-        email: 'omar@indchem.com',
-        sector: 'Chemicals',
-        description: 'Chemical manufacturing company seeking ESG certification.',
-        status: 'REJECTED',
-        aiPrecheckResult: 'Application lacks substantial ESG commitments. No environmental impact reduction plans. Missing waste management and emission data. Social responsibility metrics absent.',
-        reviewNotes: {
-          create: [
-            {
-              authorType: 'SYSTEM',
-              note: 'Application submitted for ESG certification review.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Application lacks required environmental data and sustainability commitments.',
-            },
-            {
-              authorType: 'STAFF',
-              note: 'Application rejected due to insufficient ESG documentation. Applicant may reapply with comprehensive sustainability plan.',
-            },
-          ],
-        },
-      },
-    }),
-  ])
-
-  // Create one more approved application with certificate
-  const approvedApp2 = await prisma.application.create({
-    data: {
-      applicantName: 'Layla Noor',
-      organizationName: 'Organic Farms Emirates',
-      email: 'layla@organicfarms.ae',
-      sector: 'Agriculture',
-      description: 'Organic farming operation using sustainable practices including drip irrigation, composting, and natural pest control. Zero chemical pesticides. We employ 150 local farmers with fair trade practices and provide agricultural training to the community.',
-      status: 'APPROVED',
-      aiPrecheckResult: 'Excellent application demonstrating strong commitment to environmental and social sustainability. Governance structures are well-defined.',
-      reviewNotes: {
-        create: [
-          {
-            authorType: 'SYSTEM',
-            note: 'Application submitted for ESG certification review.',
-          },
-          {
-            authorType: 'STAFF',
-            note: 'Verified organic certification and sustainable farming practices.',
-          },
-          {
-            authorType: 'STAFF',
-            note: 'Application approved. ESG certificate issued.',
-          },
-        ],
-      },
-      certificate: {
-        create: {
-          certificateNumber: 'ESG-2024-002',
-          issuedAt: new Date('2024-12-01'),
-        },
-      },
-    },
-  })
-
-  console.log('Seed data created successfully!')
-  console.log(`Created ${applications.length + 1} applications`)
-
-  // Seed Service Hub data
   // Create ESG service first to ensure it gets ID 1
   const esgService = await prisma.service.create({
     data: {
@@ -219,15 +50,15 @@ async function main() {
     }),
     prisma.service.create({
       data: {
-        dept: 'Training & Development',
+        dept: 'Business Connect & Services',
         platform: 'ADC Platform',
-        name: 'Upskilling Programs',
-        nameAr: 'برامج تطوير المهارات',
-        description: 'Professional development and training programs to enhance business skills and capabilities.',
-        descriptionAr: 'برامج التطوير المهني والتدريب لتعزيز مهارات وقدرات الأعمال.',
+        name: 'Knowledge Sharing & Upskilling',
+        nameAr: 'تبادل المعرفة والتطوير',
+        description: 'Browse training programs, book sessions, and submit queries for knowledge sharing and upskilling.',
+        descriptionAr: 'تصفح البرامج التدريبية وحجز الجلسات وتقديم استفسارات لتبادل المعرفة وتطوير المهارات.',
         channelType: 'INTERNAL',
-        tags: JSON.stringify(['training', 'skills', 'development', 'courses', 'learning', 'upskill']),
-        tagsAr: JSON.stringify(['تدريب', 'مهارات', 'تطوير', 'دورات', 'تعلم']),
+        tags: JSON.stringify(['training', 'skills', 'development', 'courses', 'learning', 'upskill', 'knowledge', 'sharing']),
+        tagsAr: JSON.stringify(['تدريب', 'مهارات', 'تطوير', 'دورات', 'تعلم', 'معرفة', 'تبادل']),
       },
     }),
     prisma.service.create({
@@ -647,6 +478,7 @@ async function main() {
   ])
 
   console.log(`Created ${services.length + 1} services (including ESG)`)
+  console.log('Seed completed — Service catalog only, no application data.')
 }
 
 main()
