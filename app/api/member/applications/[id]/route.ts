@@ -14,6 +14,7 @@ export async function GET(
       include: {
         esgApplication: true,
         knowledgeSharingApplication: true,
+        chamberBoostApplication: true,
         activityLogs: {
           orderBy: { performedAt: 'desc' },
           take: 50,
@@ -42,6 +43,7 @@ export async function GET(
           rejectionReason: baseApp.rejectionReason,
           esgApplication: baseApp.esgApplication,
           knowledgeSharingApplication: baseApp.knowledgeSharingApplication,
+          chamberBoostApplication: baseApp.chamberBoostApplication,
           activityLogs: filteredLogs.map(log => ({
             id: log.id,
             action: log.action,

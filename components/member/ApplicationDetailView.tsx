@@ -22,6 +22,7 @@ interface ApplicationDetailViewProps {
     rejectionReason: string | null
     esgApplication: any | null
     knowledgeSharingApplication: any | null
+    chamberBoostApplication: any | null
     certificate?: {
       certificateNumber: string
       issuedAt: string
@@ -197,7 +198,9 @@ export default function ApplicationDetailView({ application }: ApplicationDetail
           ? renderESGSummary(application.esgApplication, isRtl)
           : application.serviceType === 'KNOWLEDGE_SHARING' && application.knowledgeSharingApplication
             ? renderKSSummary(application.knowledgeSharingApplication, isRtl)
-            : renderGenericSummary(application, isRtl)}
+            : application.serviceType === 'CHAMBER_BOOST' && application.chamberBoostApplication
+              ? renderCBSummary(application.chamberBoostApplication, isRtl)
+              : renderGenericSummary(application, isRtl)}
       </div>
 
       {/* ── 4. Certificate Section ────────────────────────────────────── */}
@@ -474,6 +477,62 @@ function renderKSSummary(ks: any, isRtl: boolean) {
               </div>
             )}
           </dl>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function renderCBSummary(cb: any, isRtl: boolean) {
+  const fields: Array<{ labelEn: string; labelAr: string; value: string | undefined | null }> = [
+    { labelEn: 'Deal Title', labelAr: 'عنوان العرض', value: isRtl ? (cb.dealTitleAr || cb.dealTitle) : cb.dealTitle },
+    { labelEn: 'Vendor', labelAr: 'الشريك', value: isRtl ? (cb.vendorNameAr || cb.vendorName) : cb.vendorName },
+    { labelEn: 'Deal Type', labelAr: 'نوع العرض', value: cb.dealType === 'UNLIMITED' ? (isRtl ? 'فوري' : 'Instant') : (isRtl ? 'محدود' : 'Limited') },
+    { labelEn: 'Category', labelAr: 'الفئة', value: isRtl ? (cb.categoryAr || cb.category) : cb.category },
+    { labelEn: 'Company Size', labelAr: 'حجم الشركة', value: cb.companySize },
+    { labelEn: 'Intended Use', labelAr: 'الاستخدام المقصود', value: cb.intendedUse },
+  ]
+
+  return (
+    <div className="space-y-4">
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {fields.map((f) =>
+          f.value ? (
+            <div key={f.labelEn} className={f.labelEn === 'Intended Use' ? 'sm:col-span-2' : ''}>
+              <dt className="text-xs font-medium" style={{ color: 'var(--muted)' }}>
+                {isRtl ? f.labelAr : f.labelEn}
+              </dt>
+              <dd className="text-sm mt-0.5" style={{ color: 'var(--text)' }}>
+                {f.value}
+              </dd>
+            </div>
+          ) : null,
+        )}
+      </dl>
+
+      {/* Voucher Code Display */}
+      {cb.voucherCode && (
+        <div
+          className="p-4 rounded-xl"
+          style={{
+            background: 'color-mix(in srgb, var(--accent-green) 8%, var(--panel))',
+            border: '1px solid color-mix(in srgb, var(--accent-green) 25%, var(--border))',
+          }}
+        >
+          <p className="text-xs font-medium mb-2" style={{ color: 'var(--accent-green)' }}>
+            {isRtl ? 'رمز القسيمة الخاص بك' : 'Your Voucher Code'}
+          </p>
+          <code
+            className="text-lg font-mono font-bold px-4 py-2 rounded-lg inline-block"
+            style={{ background: 'var(--panel)', color: 'var(--accent-green)', border: '2px dashed var(--accent-green)' }}
+          >
+            {cb.voucherCode}
+          </code>
+          {cb.expiryDate && (
+            <p className="text-xs mt-2" style={{ color: 'var(--muted)' }}>
+              {isRtl ? 'صالح حتى:' : 'Valid until:'} {new Date(cb.expiryDate).toLocaleDateString(isRtl ? 'ar-AE' : 'en-US')}
+            </p>
+          )}
         </div>
       )}
     </div>

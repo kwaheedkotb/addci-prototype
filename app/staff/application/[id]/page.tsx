@@ -59,6 +59,27 @@ interface KnowledgeSharingData {
   completedAt: string | null
 }
 
+interface ChamberBoostData {
+  id: string
+  dealId: string
+  dealTitle: string
+  dealTitleAr: string | null
+  dealType: string
+  vendorName: string
+  vendorNameAr: string | null
+  category: string
+  categoryAr: string | null
+  companySize: string | null
+  intendedUse: string | null
+  additionalNotes: string | null
+  voucherCode: string | null
+  vendorRedirectUrl: string | null
+  fulfilledAt: string | null
+  fulfilledBy: string | null
+  rejectionReason: string | null
+  expiryDate: string | null
+}
+
 interface RawStaffApplication {
   id: string
   serviceType: string
@@ -73,6 +94,7 @@ interface RawStaffApplication {
   internalNotes: string | null
   knowledgeSharingApplication?: KnowledgeSharingData | null
   esgApplication?: Record<string, unknown> | null
+  chamberBoostApplication?: ChamberBoostData | null
 }
 
 export default function StaffApplicationDetail() {
@@ -118,6 +140,19 @@ export default function StaffApplicationDetail() {
 
   const isKS = rawApp?.serviceType === 'KNOWLEDGE_SHARING'
   const ksData = rawApp?.knowledgeSharingApplication
+
+  const isCB = rawApp?.serviceType === 'CHAMBER_BOOST'
+  const cbData = rawApp?.chamberBoostApplication
+
+  // Chamber Boost states
+  const [cbVoucherCode, setCbVoucherCode] = useState('')
+  const [cbExpiryDate, setCbExpiryDate] = useState('')
+  const [cbRejectionReason, setCbRejectionReason] = useState('')
+  const [cbActionLoading, setCbActionLoading] = useState<string | null>(null)
+  const [cbSummary, setCbSummary] = useState<string | null>(null)
+  const [cbSummaryLoading, setCbSummaryLoading] = useState(false)
+  const [cbActions, setCbActions] = useState<Array<{ action: string; priority: string }> | null>(null)
+  const [cbActionsLoading, setCbActionsLoading] = useState(false)
 
   useEffect(() => {
     fetchApplication()
@@ -421,6 +456,145 @@ export default function StaffApplicationDetail() {
       console.error('KS AI actions error:', error)
     } finally {
       setKsActionsLoading(false)
+    }
+  }
+
+  // ─── Chamber Boost Functions ───────────────────────────────────────────────
+
+  async function cbApproveAndIssueVoucher() {
+    if (!rawApp) return
+    const code = cbVoucherCode || `ADCCI-${(cbData?.vendorName || 'DEAL').toUpperCase().replace(/\s+/g, '').slice(0, 4)}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+    setCbActionLoading('approve')
+    try {
+      const res = await fetch(`/api/staff/applications/${rawApp.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'APPROVED',
+          voucherCode: code,
+          expiryDate: cbExpiryDate || null,
+          fulfilledAt: new Date().toISOString(),
+          fulfilledBy: 'Staff',
+          performedBy: 'Staff',
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        await logActivity(`Voucher issued: ${code}`)
+        fetchApplication()
+      }
+    } catch (error) {
+      console.error('CB approve error:', error)
+    } finally {
+      setCbActionLoading(null)
+    }
+  }
+
+  async function cbReject() {
+    if (!rawApp || !cbRejectionReason.trim()) return
+    setCbActionLoading('reject')
+    try {
+      const res = await fetch(`/api/staff/applications/${rawApp.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'REJECTED',
+          rejectionReason: cbRejectionReason,
+          cbRejectionReason: cbRejectionReason,
+          performedBy: 'Staff',
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        fetchApplication()
+      }
+    } catch (error) {
+      console.error('CB reject error:', error)
+    } finally {
+      setCbActionLoading(null)
+    }
+  }
+
+  async function cbRequestInfo() {
+    if (!rawApp) return
+    setCbActionLoading('info')
+    try {
+      const res = await fetch(`/api/staff/applications/${rawApp.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'PENDING_INFO',
+          performedBy: 'Staff',
+        }),
+      })
+      const data = await res.json()
+      if (data.success) fetchApplication()
+    } catch (error) {
+      console.error('CB request info error:', error)
+    } finally {
+      setCbActionLoading(null)
+    }
+  }
+
+  async function logActivity(message: string) {
+    // Activity is logged server-side via the PATCH handler
+    // This is just a helper placeholder
+  }
+
+  async function runCbSummary() {
+    if (!rawApp || !cbData) return
+    setCbSummaryLoading(true)
+    try {
+      const res = await fetch('/api/ai/ks-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationId: rawApp.id,
+          submittedBy: rawApp.submittedBy,
+          submittedByEmail: rawApp.submittedByEmail,
+          memberTier: rawApp.memberTier,
+          status: rawApp.status,
+          requestType: 'CHAMBER_BOOST_REVIEW',
+          programName: cbData.dealTitle,
+          queryText: cbData.intendedUse || '',
+          numberOfAttendees: null,
+          systemPrompt: `You are an ADCCI staff assistant reviewing a Chamber Boost deal request. Summarize in 3-4 sentences: the deal requested (${cbData.dealTitle} from ${cbData.vendorName}), the member company's intended use, and whether this is a standard request or requires special consideration based on the company size (${cbData.companySize || 'N/A'}) or intended use description.`,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) setCbSummary(data.summary)
+    } catch (error) {
+      console.error('CB AI summary error:', error)
+    } finally {
+      setCbSummaryLoading(false)
+    }
+  }
+
+  async function runCbActions() {
+    if (!rawApp || !cbData) return
+    setCbActionsLoading(true)
+    try {
+      const res = await fetch('/api/ai/ks-actions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationId: rawApp.id,
+          submittedBy: rawApp.submittedBy,
+          submittedByEmail: rawApp.submittedByEmail,
+          memberTier: rawApp.memberTier,
+          status: rawApp.status,
+          requestType: 'CHAMBER_BOOST_REVIEW',
+          programName: cbData.dealTitle,
+          queryText: `Deal: ${cbData.dealTitle}, Vendor: ${cbData.vendorName}, Category: ${cbData.category}, Deal Type: ${cbData.dealType}, Company Size: ${cbData.companySize || 'N/A'}, Intended Use: ${cbData.intendedUse || 'N/A'}`,
+          systemPrompt: `You are an ADCCI staff assistant. Based on this Chamber Boost application for a LIMITED deal, suggest 3 specific actions. Consider: SLA is 2 working days, verify the member tier eligibility for this deal, check remaining slots availability, and determine if the intended use aligns with the deal's conditions. Return ONLY valid JSON array, no markdown: [{ "action": "string", "priority": "high"|"medium"|"low" }]`,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) setCbActions(data.actions)
+    } catch (error) {
+      console.error('CB AI actions error:', error)
+    } finally {
+      setCbActionsLoading(false)
     }
   }
 
@@ -792,6 +966,247 @@ export default function StaffApplicationDetail() {
     )
   }
 
+  // ─── Chamber Boost Render Helpers ──────────────────────────────────────────
+
+  function renderCbDetails() {
+    if (!isCB || !cbData) return null
+
+    const isLimited = cbData.dealType === 'LIMITED'
+
+    return (
+      <div className="shadow rounded-lg overflow-hidden theme-panel">
+        <div className="px-6 py-4 flex items-center gap-3" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
+          <svg className="w-5 h-5" style={{ color: 'var(--accent-amber)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+          </svg>
+          <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>
+            Deal Information
+          </h2>
+          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+            isLimited
+              ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
+              : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30'
+          }`}>
+            {isLimited ? 'Limited' : 'Unlimited (Auto-approved)'}
+          </span>
+        </div>
+
+        <div className="px-6 py-6 space-y-4">
+          {/* Deal details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Deal Title</label>
+              <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{cbData.dealTitle}</p>
+              {cbData.dealTitleAr && <p className="text-sm" style={{ color: 'var(--muted)' }}>{cbData.dealTitleAr}</p>}
+            </div>
+            <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Vendor</label>
+              <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{cbData.vendorName}</p>
+              {cbData.vendorNameAr && <p className="text-sm" style={{ color: 'var(--muted)' }}>{cbData.vendorNameAr}</p>}
+            </div>
+            <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Category</label>
+              <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{cbData.category}</p>
+            </div>
+            <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Deal Type</label>
+              <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{cbData.dealType}</p>
+            </div>
+          </div>
+
+          {/* Member request details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {cbData.companySize && (
+              <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Company Size</label>
+                <p className="mt-1 font-medium" style={{ color: 'var(--text)' }}>{cbData.companySize} employees</p>
+              </div>
+            )}
+            {cbData.intendedUse && (
+              <div className="p-4 rounded-lg md:col-span-2" style={{ background: 'var(--panel-2)' }}>
+                <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Intended Use</label>
+                <p className="mt-1" style={{ color: 'var(--text)' }}>{cbData.intendedUse}</p>
+              </div>
+            )}
+            {cbData.additionalNotes && (
+              <div className="p-4 rounded-lg md:col-span-2" style={{ background: 'var(--panel-2)' }}>
+                <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Additional Notes</label>
+                <p className="mt-1" style={{ color: 'var(--text)' }}>{cbData.additionalNotes}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Fulfillment info */}
+          {cbData.voucherCode && (
+            <div className="p-4 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--muted)' }}>Voucher Code</label>
+              <code className="mt-1 block text-lg font-mono font-bold" style={{ color: 'var(--accent-green)' }}>{cbData.voucherCode}</code>
+              {cbData.fulfilledAt && (
+                <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
+                  {cbData.dealType === 'UNLIMITED' ? 'Auto-fulfilled' : `Fulfilled by ${cbData.fulfilledBy || 'Staff'}`} on {new Date(cbData.fulfilledAt).toLocaleDateString()}
+                </p>
+              )}
+              {cbData.expiryDate && (
+                <p className="text-xs mt-1" style={{ color: 'var(--accent-amber)' }}>
+                  Expires: {new Date(cbData.expiryDate).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          )}
+
+          {cbData.rejectionReason && (
+            <div className="p-4 rounded-lg" style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid var(--accent-red)' }}>
+              <label className="block text-xs font-medium uppercase" style={{ color: 'var(--accent-red)' }}>Rejection Reason</label>
+              <p className="mt-1" style={{ color: 'var(--text)' }}>{cbData.rejectionReason}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  function renderCbActions() {
+    if (!isCB || !cbData || cbData.dealType === 'UNLIMITED') return null
+    if (rawApp?.status === 'APPROVED' || rawApp?.status === 'REJECTED' || rawApp?.status === 'CLOSED') return null
+
+    return (
+      <div className="shadow rounded-lg overflow-hidden theme-panel">
+        <div className="px-6 py-4" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
+          <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Staff Actions</h2>
+        </div>
+        <div className="p-6 space-y-4">
+          {/* Approve & Issue Voucher */}
+          <div className="p-4 rounded-lg" style={{ border: '1px solid var(--border)' }}>
+            <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text)' }}>Approve & Issue Voucher</h3>
+            <div className="space-y-2">
+              <div>
+                <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>Voucher Code</label>
+                <input
+                  type="text"
+                  value={cbVoucherCode}
+                  onChange={e => setCbVoucherCode(e.target.value)}
+                  placeholder={`ADCCI-${(cbData.vendorName || '').toUpperCase().replace(/\s+/g, '').slice(0, 4)}-XXXXXX`}
+                  className="w-full rounded-lg px-3 py-2 text-sm border font-mono"
+                  style={{ background: 'var(--input-bg)', borderColor: 'var(--input-border)', color: 'var(--text)' }}
+                />
+                <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>Leave empty to auto-generate</p>
+              </div>
+              <div>
+                <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>Expiry Date (optional)</label>
+                <input
+                  type="date"
+                  value={cbExpiryDate}
+                  onChange={e => setCbExpiryDate(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm border"
+                  style={{ background: 'var(--input-bg)', borderColor: 'var(--input-border)', color: 'var(--text)' }}
+                />
+              </div>
+              <button
+                onClick={cbApproveAndIssueVoucher}
+                disabled={cbActionLoading === 'approve'}
+                className="w-full mt-2 px-4 py-2.5 rounded-lg text-white font-medium text-sm disabled:opacity-50"
+                style={{ background: 'var(--accent-green)' }}
+              >
+                {cbActionLoading === 'approve' ? 'Processing...' : 'Approve & Issue Voucher'}
+              </button>
+            </div>
+          </div>
+
+          {/* Reject */}
+          <div className="p-4 rounded-lg" style={{ border: '1px solid var(--border)' }}>
+            <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text)' }}>Reject Request</h3>
+            <textarea
+              value={cbRejectionReason}
+              onChange={e => setCbRejectionReason(e.target.value)}
+              rows={2}
+              placeholder="Rejection reason (required)"
+              className="w-full rounded-lg px-3 py-2 text-sm border resize-none"
+              style={{ background: 'var(--input-bg)', borderColor: 'var(--input-border)', color: 'var(--text)' }}
+            />
+            <button
+              onClick={cbReject}
+              disabled={cbActionLoading === 'reject' || !cbRejectionReason.trim()}
+              className="w-full mt-2 px-4 py-2.5 rounded-lg text-white font-medium text-sm disabled:opacity-50"
+              style={{ background: 'var(--accent-red)' }}
+            >
+              {cbActionLoading === 'reject' ? 'Processing...' : 'Reject Request'}
+            </button>
+          </div>
+
+          {/* Request More Info */}
+          <button
+            onClick={cbRequestInfo}
+            disabled={cbActionLoading === 'info'}
+            className="w-full px-4 py-2.5 rounded-lg font-medium text-sm disabled:opacity-50"
+            style={{ background: 'var(--panel-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
+          >
+            {cbActionLoading === 'info' ? 'Processing...' : 'Request More Information'}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  function renderCbAiTools() {
+    if (!isCB || !cbData || cbData.dealType === 'UNLIMITED') return null
+
+    return (
+      <div className="shadow rounded-lg overflow-hidden theme-panel">
+        <div className="px-6 py-4" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
+          <h2 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>AI Assist</h2>
+        </div>
+        <div className="p-6 space-y-4">
+          {/* AI Summary */}
+          <div>
+            <button
+              onClick={runCbSummary}
+              disabled={cbSummaryLoading}
+              className="w-full px-4 py-2 rounded-lg font-medium text-sm text-white disabled:opacity-50"
+              style={{ background: 'var(--primary)' }}
+            >
+              {cbSummaryLoading ? 'Generating Summary...' : cbSummary ? 'Regenerate Summary' : 'Generate AI Summary'}
+            </button>
+            {cbSummary && (
+              <div className="mt-3 p-4 rounded-lg text-sm" style={{ background: 'var(--panel-2)', color: 'var(--text)' }}>
+                {cbSummary}
+              </div>
+            )}
+          </div>
+
+          {/* AI Recommended Actions */}
+          <div>
+            <button
+              onClick={runCbActions}
+              disabled={cbActionsLoading}
+              className="w-full px-4 py-2 rounded-lg font-medium text-sm disabled:opacity-50"
+              style={{ background: 'var(--panel-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
+            >
+              {cbActionsLoading ? 'Generating Actions...' : cbActions ? 'Regenerate Actions' : 'Get AI Recommended Actions'}
+            </button>
+            {cbActions && (
+              <div className="mt-3 space-y-2">
+                {cbActions.map((a, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--panel-2)' }}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                      a.priority === 'high'
+                        ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30'
+                        : a.priority === 'medium'
+                          ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
+                          : 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/30'
+                    }`}>
+                      {a.priority}
+                    </span>
+                    <p className="text-sm flex-1" style={{ color: 'var(--text)' }}>{a.action}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // ─── Loading & Error States ─────────────────────────────────────────────────
 
   if (loading) {
@@ -899,6 +1314,12 @@ export default function StaffApplicationDetail() {
           {/* Knowledge Sharing Send Response */}
           {renderKsSendResponse()}
 
+          {/* Chamber Boost Service Details */}
+          {renderCbDetails()}
+
+          {/* Chamber Boost Staff Actions */}
+          {renderCbActions()}
+
           {/* Review Notes */}
           <div className="shadow rounded-lg overflow-hidden theme-panel">
             <div className="px-6 py-4" style={{ background: 'var(--panel-2)', borderBottom: '1px solid var(--border)' }}>
@@ -969,8 +1390,11 @@ export default function StaffApplicationDetail() {
           {/* KS Survey Button (only for closed KS applications) */}
           {renderKsSurveyButton()}
 
-          {/* AI Reviewer Assist - Advanced Analysis (non-KS only) */}
-          {!isKS && (
+          {/* CB AI Tools (only for Chamber Boost LIMITED deals) */}
+          {renderCbAiTools()}
+
+          {/* AI Reviewer Assist - Advanced Analysis (non-KS, non-CB only) */}
+          {!isKS && !isCB && (
             <div className="shadow rounded-lg overflow-hidden theme-panel">
               <div className="px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30" style={{ borderBottom: '1px solid var(--border)' }}>
                 <h2 className="text-lg font-semibold text-emerald-900 dark:text-emerald-300 flex items-center gap-2">
@@ -1111,8 +1535,8 @@ export default function StaffApplicationDetail() {
             </div>
           )}
 
-          {/* AI Tools (non-KS only) */}
-          {!isKS && (
+          {/* AI Tools (non-KS, non-CB only) */}
+          {!isKS && !isCB && (
             <div className="shadow rounded-lg overflow-hidden theme-panel">
               <div className="px-6 py-4 bg-purple-50 dark:bg-purple-900/30" style={{ borderBottom: '1px solid var(--border)' }}>
                 <h2 className="text-lg font-semibold text-purple-900 dark:text-purple-300 flex items-center gap-2">

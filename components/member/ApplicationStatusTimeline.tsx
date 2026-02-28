@@ -44,6 +44,9 @@ export function getStagesForService(serviceType: string, app: any): TimelineStag
   if (serviceType === 'KNOWLEDGE_SHARING') {
     return buildKnowledgeSharingStages(app)
   }
+  if (serviceType === 'CHAMBER_BOOST') {
+    return buildChamberBoostStages(app)
+  }
   return buildDefaultStages(app)
 }
 
@@ -139,6 +142,61 @@ function buildESGStages(app: any): TimelineStage[] {
 }
 
 // ── KS: Submitted → Under Review → Response Sent → Closed ──────────────────
+
+// ── Chamber Boost: Submitted → Under Review → Voucher Issued (or Rejected)
+// For UNLIMITED deals: Submitted → Auto-Approved (instant)
+
+function buildChamberBoostStages(app: any): TimelineStage[] {
+  const status: string = app.status ?? 'SUBMITTED'
+  const cb = app.chamberBoostApplication ?? {}
+  const isUnlimited = cb.dealType === 'UNLIMITED'
+
+  if (isUnlimited) {
+    // Unlimited deals are auto-approved instantly
+    return [
+      {
+        key: 'claimed',
+        labelEn: 'Deal Claimed',
+        labelAr: 'تم المطالبة بالعرض',
+        date: app.submittedAt ?? null,
+        isCurrent: false,
+      },
+      {
+        key: 'fulfilled',
+        labelEn: 'Voucher Issued',
+        labelAr: 'تم إصدار القسيمة',
+        date: cb.fulfilledAt ?? app.submittedAt ?? null,
+        isCurrent: true,
+      },
+    ]
+  }
+
+  // Limited deals go through staff review
+  const sIdx = statusIndex(status)
+  return [
+    {
+      key: 'submitted',
+      labelEn: 'Request Submitted',
+      labelAr: 'تم تقديم الطلب',
+      date: app.submittedAt ?? null,
+      isCurrent: status === 'SUBMITTED',
+    },
+    {
+      key: 'under_review',
+      labelEn: 'Under Review',
+      labelAr: 'قيد المراجعة',
+      date: sIdx >= 1 ? (app.updatedAt ?? null) : null,
+      isCurrent: status === 'UNDER_REVIEW' || status === 'PENDING_INFO',
+    },
+    {
+      key: 'completed',
+      labelEn: status === 'REJECTED' ? 'Rejected' : 'Voucher Issued',
+      labelAr: status === 'REJECTED' ? 'مرفوض' : 'تم إصدار القسيمة',
+      date: ['APPROVED', 'REJECTED', 'CLOSED'].includes(status) ? (app.reviewedAt ?? app.updatedAt ?? null) : null,
+      isCurrent: ['APPROVED', 'REJECTED', 'CLOSED'].includes(status),
+    },
+  ]
+}
 
 function buildKnowledgeSharingStages(app: any): TimelineStage[] {
   const status: string = app.status ?? 'SUBMITTED'

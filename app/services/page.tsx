@@ -82,6 +82,8 @@ export default function ServicesPage() {
       router.push('/services/market-directory')
     } else if (service.name === 'Knowledge Sharing & Upskilling' || service.name === 'Upskilling Programs') {
       router.push('/services/knowledge-sharing')
+    } else if (service.name === 'Chamber Boost') {
+      router.push('/services/chamber-boost')
     } else {
       router.push(`/services/${service.id}`)
     }

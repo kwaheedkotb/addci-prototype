@@ -22,6 +22,7 @@ export async function GET(
         },
         esgApplication: true,
         knowledgeSharingApplication: true,
+        chamberBoostApplication: true,
       },
     })
 
@@ -97,6 +98,19 @@ export async function PATCH(
       updateData.knowledgeSharingApplication = { update: ksFields }
     }
 
+    // Handle ChamberBoostApplication nested updates
+    const cbFields: Record<string, unknown> = {}
+    if (body.voucherCode !== undefined) cbFields.voucherCode = body.voucherCode
+    if (body.vendorRedirectUrl !== undefined) cbFields.vendorRedirectUrl = body.vendorRedirectUrl
+    if (body.fulfilledAt !== undefined) cbFields.fulfilledAt = body.fulfilledAt ? new Date(body.fulfilledAt) : null
+    if (body.fulfilledBy !== undefined) cbFields.fulfilledBy = body.fulfilledBy
+    if (body.cbRejectionReason !== undefined) cbFields.rejectionReason = body.cbRejectionReason
+    if (body.expiryDate !== undefined) cbFields.expiryDate = body.expiryDate ? new Date(body.expiryDate) : null
+
+    if (Object.keys(cbFields).length > 0 && current.serviceType === 'CHAMBER_BOOST') {
+      updateData.chamberBoostApplication = { update: cbFields }
+    }
+
     // Update application
     const updated = await prisma.baseApplication.update({
       where: { id },
@@ -111,6 +125,7 @@ export async function PATCH(
         },
         esgApplication: true,
         knowledgeSharingApplication: true,
+        chamberBoostApplication: true,
       },
     })
 

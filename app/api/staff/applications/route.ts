@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
           },
           esgApplication: !serviceType || serviceType === 'ESG_LABEL',
           knowledgeSharingApplication: !serviceType || serviceType === 'KNOWLEDGE_SHARING',
+          chamberBoostApplication: !serviceType || serviceType === 'CHAMBER_BOOST',
         },
       }),
       prisma.baseApplication.count({ where }),

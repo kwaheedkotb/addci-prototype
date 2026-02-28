@@ -137,6 +137,7 @@ export async function GET(request: NextRequest) {
         include: {
           esgApplication: true,
           knowledgeSharingApplication: true,
+          chamberBoostApplication: true,
         },
       }),
       prisma.baseApplication.count({ where: baseWhere }),

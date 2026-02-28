@@ -124,6 +124,12 @@ export function getRequestSummary(app: {
   esgApplication?: {
     subSector?: string | null
   } | null
+  chamberBoostApplication?: {
+    dealTitle?: string | null
+    dealTitleAr?: string | null
+    vendorName?: string | null
+    vendorNameAr?: string | null
+  } | null
 }): { en: string; ar: string } {
   const meta = getServiceMeta(app.serviceType)
 
@@ -141,6 +147,14 @@ export function getRequestSummary(app: {
         en: preview || 'Training query',
         ar: preview || 'استفسار تدريبي',
       }
+    }
+  }
+
+  if (app.serviceType === 'CHAMBER_BOOST' && app.chamberBoostApplication) {
+    const cb = app.chamberBoostApplication
+    return {
+      en: cb.dealTitle && cb.vendorName ? `${cb.dealTitle} — ${cb.vendorName}` : cb.dealTitle || 'Chamber Boost Deal',
+      ar: cb.dealTitleAr && cb.vendorNameAr ? `${cb.dealTitleAr} — ${cb.vendorNameAr}` : cb.dealTitleAr || 'عرض تعزيز الغرفة',
     }
   }
 
